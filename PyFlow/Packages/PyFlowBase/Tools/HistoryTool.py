@@ -1,24 +1,10 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy.QtWidgets import *
+from PySide6 import QtCore
+from PySide6 import QtGui
+from PySide6.QtWidgets import *
 
 from PyFlow.UI.Tool.Tool import DockTool
 from PyFlow.UI.EditorHistory import EditorHistory
+from PyFlow.UI import editor_history
 
 
 class HistoryEntry(QListWidgetItem):
@@ -44,9 +30,9 @@ class HistoryWidget(QListWidget):
     def __init__(self, parent=None):
         super(HistoryWidget, self).__init__(parent)
         self.currentRowChanged.connect(self.onRowChanged)
-        EditorHistory().statePushed.connect(self.addEntry)
-        EditorHistory().stateRemoved.connect(self.onRemoveState)
-        EditorHistory().stateSelected.connect(self.selectEntry)
+        editor_history.statePushed.connect(self.addEntry)
+        editor_history.stateRemoved.connect(self.onRemoveState)
+        editor_history.stateSelected.connect(self.selectEntry)
         self._data = {}
 
     def onRemoveState(self, state):
@@ -69,7 +55,7 @@ class HistoryWidget(QListWidget):
         super(HistoryWidget, self).mouseReleaseEvent(event)
         item = self.currentItem()
         if item is not None:
-            EditorHistory().selectState(item.state)
+            editor_history.selectState(item.state)
 
     def onRowChanged(self, row):
         for i in range(self.count()):
@@ -98,14 +84,14 @@ class HistoryTool(DockTool):
 
     def onShow(self):
         super(HistoryTool, self).onShow()
-        if self.undoStackWidget.count() != EditorHistory().count():
-            stack = EditorHistory().getStack()
+        if self.undoStackWidget.count() != editor_history.count():
+            stack = editor_history.getStack()
             for state in stack:
                 self.undoStackWidget.addEntry(state)
-            self.undoStackWidget.selectEntry(EditorHistory().activeState)
+            self.undoStackWidget.selectEntry(editor_history.activeState)
 
     def onClear(self):
-        EditorHistory().clear()
+        editor_history.clear()
         self.undoStackWidget.clear()
 
     @staticmethod
@@ -114,7 +100,7 @@ class HistoryTool(DockTool):
 
     @staticmethod
     def defaultDockArea():
-        return QtCore.Qt.LeftDockWidgetArea
+        return Qt.LeftDockWidgetArea
 
     @staticmethod
     def toolTip():

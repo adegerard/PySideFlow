@@ -1,22 +1,9 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 import json
-
-from qtpy import QtCore, QtGui
-from qtpy.QtWidgets import (
+from PySide6.QtCore import (
+    Qt,
+)
+from PySide6 import QtCore, QtGui
+from PySide6.QtWidgets import (
     QListWidget,
     QListWidgetItem,
     QWidget,
@@ -26,7 +13,9 @@ from qtpy.QtWidgets import (
 from PyFlow.UI.EditorHistory import EditorHistory
 from PyFlow.UI.Canvas.UIVariable import UIVariable
 from PyFlow.UI.Views.VariablesWidget_ui import Ui_Form
+from PyFlow.UI import editor_history
 from PyFlow.Core.Common import *
+from PyFlow.Core import graph_manager
 
 VARIABLE_TAG = "VAR"
 VARIABLE_DATA_TAG = "VAR_DATA"
@@ -38,7 +27,7 @@ class VariablesListWidget(QListWidget):
     def __init__(self, parent=None):
         super(VariablesListWidget, self).__init__(parent)
         self.setDragDropMode(QAbstractItemView.InternalMove)
-        self.setDefaultDropAction(QtCore.Qt.MoveAction)
+        self.setDefaultDropAction(Qt.MoveAction)
         self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setSelectionRectVisible(True)
 
@@ -62,7 +51,7 @@ class VariablesWidget(QWidget, Ui_Form):
         super(VariablesWidget, self).__init__(parent)
         self.setupUi(self)
         self.pyFlowInstance = pyFlowInstance
-        self.pyFlowInstance.graphManager.get().graphChanged.connect(self.onGraphChanged)
+        graph_manager.graphChanged.connect(self.onGraphChanged)
         self.pbNewVar.clicked.connect(self.createVariable)
         self.listWidget = VariablesListWidget()
         self.lytListWidget.addWidget(self.listWidget)
@@ -71,7 +60,7 @@ class VariablesWidget(QWidget, Ui_Form):
     def actualize(self):
         self.clear()
         # populate current graph
-        graph = self.pyFlowInstance.graphManager.get().activeGraph()
+        graph = graph_manager.activeGraph()
         if graph:
             for var in graph.getVarList():
                 self.createVariableWrapperAndAddToList(var)
@@ -90,7 +79,7 @@ class VariablesWidget(QWidget, Ui_Form):
         self.actualize()
 
         self.clearProperties()
-        EditorHistory().saveState("Kill variable", modify=True)
+        editor_history.saveState("Kill variable", modify=True)
 
     def createVariableWrapperAndAddToList(self, rawVariable):
         uiVariable = UIVariable(rawVariable, self)
@@ -103,12 +92,12 @@ class VariablesWidget(QWidget, Ui_Form):
         self, dataType="BoolPin", accessLevel=AccessLevel.public, uid=None
     ):
         rawVariable = (
-            self.pyFlowInstance.graphManager.get()
+            graph_manager
             .activeGraph()
             .createVariable(dataType=dataType, accessLevel=accessLevel, uid=uid)
         )
         uiVariable = self.createVariableWrapperAndAddToList(rawVariable)
-        EditorHistory().saveState("Create variable", modify=True)
+        editor_history.saveState("Create variable", modify=True)
         return uiVariable
 
     def clearProperties(self):

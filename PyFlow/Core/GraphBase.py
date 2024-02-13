@@ -1,21 +1,11 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
+from __future__ import annotations
 import uuid
 
-from blinker import Signal
+from PySide6.QtCore import (
+    QObject,
+    Qt,
+    Signal,
+)
 from collections import Counter
 
 from PyFlow.Core.Common import *
@@ -25,18 +15,19 @@ from PyFlow import getPinDefaultValueByType
 from PyFlow.Core.Variable import Variable
 from PyFlow.Core.Interfaces import ISerializable
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from PyFlow.Core import GraphManager
 
-class GraphBase(ISerializable):
+
+class GraphBase(ISerializable, QObject):
     """Data structure representing a nodes graph
 
-    :var graphManager: reference to graph manager
-    :vartype graphManager: :class:`~PyFlow.Core.GraphManager.GraphManager`
-
     :var nameChanged: signal emitted after graph name was changed
-    :vartype nameChanged: :class:`~blinker.base.Signal`
+    :vartype nameChanged: :class:`~PySide6.QtCore.base.Signal`
 
     :var categoryChanged: signal emitted after graph category was changed
-    :vartype categoryChanged: :class:`~blinker.base.Signal`
+    :vartype categoryChanged: :class:`~PySide6.QtCore.base.Signal`
 
     :var childGraphs: a set of child graphs
     :vartype childGraphs: :class:`set`
@@ -75,15 +66,16 @@ class GraphBase(ISerializable):
         :rtype: dict
 
     """
+    nameChanged = Signal(str)
+    categoryChanged = Signal(str)
 
     def __init__(
         self, name, manager, parentGraph=None, category="", uid=None, *args, **kwargs):
         super(GraphBase, self).__init__(*args, **kwargs)
-        self.graphManager = manager
+        self._graph_manager: GraphManager = manager
         self._isRoot = False
 
-        self.nameChanged = Signal(str)
-        self.categoryChanged = Signal(str)
+
 
         self.__name = name
         self.__category = category
@@ -98,6 +90,10 @@ class GraphBase(ISerializable):
         self.uid = uuid.uuid4() if uid is None else uid
 
         manager.add(self)
+
+    @property
+    def graph_manager(self) -> GraphManager:
+        return self._graph_manager
 
     def setIsRoot(self, bIsRoot):
         """Sets this graph as root
@@ -193,7 +189,7 @@ class GraphBase(ISerializable):
         :type jsonData: dict
         """
         self.clear()
-        self.name = self.graphManager.getUniqGraphName(jsonData["name"])
+        self.name = self.graph_manager.getUniqGraphName(jsonData["name"])
         self.category = jsonData["category"]
         self.setIsRoot(jsonData["isRoot"])
         if self.isRoot():
@@ -256,7 +252,7 @@ class GraphBase(ISerializable):
         for childGraph in set(self.childGraphs):
             childGraph.remove()
         # remove itself
-        self.graphManager.removeGraph(self)
+        self._graph_manager.removeGraph(self)
 
     def clear(self):
         """Clears content of this graph as well as child graphs. Deepest graphs will be cleared first
@@ -283,7 +279,7 @@ class GraphBase(ISerializable):
         value = str(value)
         if self.__name != value:
             self.__name = value
-            self.nameChanged.send(self.__name)
+            self.nameChanged.emit(self.__name)
 
     @property
     def category(self):
@@ -292,7 +288,7 @@ class GraphBase(ISerializable):
     @category.setter
     def category(self, value):
         self.__category = str(value)
-        self.categoryChanged.send(self.__category)
+        self.categoryChanged.emit(self.__category)
 
     def Tick(self, deltaTime):
         """Executed periodically
@@ -329,7 +325,7 @@ class GraphBase(ISerializable):
         :param name: Variable name
         :type name: str
         """
-        name = self.graphManager.getUniqVariableName(name)
+        name = self._graph_manager.getUniqVariableName(name)
         var = Variable(
             self,
             getPinDefaultValueByType(dataType),
@@ -352,7 +348,7 @@ class GraphBase(ISerializable):
         assert isinstance(var, Variable)
         if var.uid in self._vars:
             popped = self._vars.pop(var.uid)
-            popped.killed.send()
+            popped.killed.emit()
 
     def getNodes(self):
         """Returns this graph's nodes storage
@@ -463,7 +459,7 @@ class GraphBase(ISerializable):
         # Check if this node is variable get/set. Variables created in child graphs are not visible to parent ones
         # Do not disrupt variable scope
         if node.__class__.__name__ in ["getVar", "setVar"]:
-            var = self.graphManager.findVariableByUid(node.variableUid())
+            var = self._graph_manager.findVariableByUid(node.variableUid())
             variableLocation = var.location()
             if len(variableLocation) > len(self.location()):
                 return False
@@ -473,11 +469,11 @@ class GraphBase(ISerializable):
 
         node.graph = weakref.ref(self)
         if jsonTemplate is not None:
-            jsonTemplate["name"] = self.graphManager.getUniqNodeName(
+            jsonTemplate["name"] = self._graph_manager.getUniqNodeName(
                 jsonTemplate["name"]
             )
         else:
-            node.setName(self.graphManager.getUniqNodeName(node.name))
+            node.setName(self._graph_manager.getUniqNodeName(node.name))
 
         self._nodes[node.uid] = node
         node.postCreate(jsonTemplate)

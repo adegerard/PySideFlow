@@ -1,30 +1,19 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 import json
 import uuid
 from copy import copy
 
-from blinker import Signal
+from PySide6.QtCore import (
+    QObject,
+    Qt,
+    Signal,
+)
 
 from PyFlow.Core.Common import *
 from PyFlow.Core.EvaluationEngine import EvaluationEngine
 from PyFlow.Core.Interfaces import IPin
 
 
-class PinBase(IPin):
+class PinBase(IPin, QObject):
     """
     **Base class for pins**
 
@@ -64,25 +53,26 @@ class PinBase(IPin):
     :ivar pinIndex: Position of this pin on node
     :ivar description: Text description of this pin
     """
+    serializationHook = Signal(object)
+    onPinConnected = Signal(object)
+    onPinDisconnected = Signal(object)
+    nameChanged = Signal(str)
+    killed = Signal(object)
+    onExecute = Signal(object)
+    containerTypeChanged = Signal()
+    dataBeenSet = Signal(object)
+    dictChanged = Signal(str)
+    markedAsDirty = Signal()
+
+    errorOccurred = Signal(object)
+    errorCleared = Signal()
 
     _packageName = ""
 
     def __init__(self, name, owningNode, direction):
-        super(PinBase, self).__init__()
+        super().__init__()
         # signals
-        self.serializationHook = Signal()
-        self.onPinConnected = Signal(object)
-        self.onPinDisconnected = Signal(object)
-        self.nameChanged = Signal(str)
-        self.killed = Signal()
-        self.onExecute = Signal(object)
-        self.containerTypeChanged = Signal()
-        self.dataBeenSet = Signal(object)
-        self.dictChanged = Signal(str)
-        self.markedAsDirty = Signal()
 
-        self.errorOccurred = Signal(object)
-        self.errorCleared = Signal()
         self._lastError = None
 
         # Access to the node
@@ -313,7 +303,7 @@ class PinBase(IPin):
         else:
             self._currStructure = self._structure
         self._data = self.defaultValue()
-        self.containerTypeChanged.send()
+        self.containerTypeChanged.emit()
 
     def setAsDict(self, bIsDict):
         """Sets this pins to be a dict
@@ -337,7 +327,7 @@ class PinBase(IPin):
             self._currStructure = self._structure
             self._keyType = None
         self._data = self.defaultValue()
-        self.containerTypeChanged.send()
+        self.containerTypeChanged.emit()
 
     def isArray(self):
         """Returns whether this pin is array or not
@@ -429,11 +419,12 @@ class PinBase(IPin):
         # Wrapper class can subscribe to this signal and return
         # UI specific data which will be considered on serialization
         # Blinker returns a tuple (receiver, return val)
-        wrapperData = self.serializationHook.send(self)
-        if wrapperData is not None:
-            if len(wrapperData) > 0:
-                # We take return value from one wrapper
-                data["wrapper"] = wrapperData[0][1]
+        # No, non, no! Awfull
+        wrapperData = self.serializationHook.emit(self)
+        # if wrapperData is not None:
+        #     if len(wrapperData) > 0:
+        #         # We take return value from one wrapper
+        #         data["wrapper"] = wrapperData[0][1]
         return data
 
     @property
@@ -461,7 +452,7 @@ class PinBase(IPin):
         if name == self.name:
             return False
         self.name = self.owningNode().getUniqPinName(name)
-        self.nameChanged.send(self.name)
+        self.nameChanged.emit(self.name)
         return True
 
     def getName(self):
@@ -504,7 +495,7 @@ class PinBase(IPin):
         """
         if self._lastError is not None:
             self._lastError = None
-            self.errorCleared.send()
+            self.errorCleared.emit()
 
     def setError(self, err):
         """Marks this pin as invalid by setting error message to it. Also fires event
@@ -513,7 +504,7 @@ class PinBase(IPin):
         :type err: str
         """
         self._lastError = err
-        self.errorOccurred.send(self._lastError)
+        self.errorOccurred.emit(self._lastError)
 
     def validateArray(self, array, func):
         valid = True
@@ -572,7 +563,7 @@ class PinBase(IPin):
             if self.direction == PinDirection.Input or self.optionEnabled(PinOptions.AlwaysPushDirty):
                 push(self)
             self.clearError()
-            self.dataBeenSet.send(self)
+            self.dataBeenSet.emit(self)
         except Exception as exc:
             self.setError(exc)
             self.setDirty()
@@ -584,7 +575,7 @@ class PinBase(IPin):
 
     def call(self, *args, **kwargs):
         if self.owningNode().isValid():
-            self.onExecute.send(*args, **kwargs)
+            self.onExecute.emit(*args, **kwargs)
 
     def disconnectAll(self):
         if self.direction == PinDirection.Input:
@@ -646,7 +637,7 @@ class PinBase(IPin):
                         continue
                     outputPin.pinIndex = index
                     index += 1
-        self.killed.send(self)
+        self.killed.emit(self)
         clearSignal(self.killed)
 
     def currentData(self):
@@ -667,7 +658,7 @@ class PinBase(IPin):
         if other.structureType != self.structureType:
             if self.optionEnabled(PinOptions.ChangeTypeOnConnection) or self.structureType == StructureType.Multi:
                 self.changeStructure(other._currStructure)
-                self.onPinConnected.send(other)
+                self.onPinConnected.emit(other)
 
     def getCurrentStructure(self):
         """Returns this pin structure type
@@ -825,7 +816,7 @@ class PinBase(IPin):
             self.updateConnectedDicts([], self._data.keyType)
 
     def pinDisconnected(self, other):
-        self.onPinDisconnected.send(other)
+        self.onPinDisconnected.emit(other)
         #push(other)
 
     def canChangeTypeOnConnection(self, checked=None, can=True, extraPins=None, selfCheck=True):
@@ -1012,7 +1003,7 @@ class PinBase(IPin):
                 port._keyType = keyType
                 if port._data.keyType != keyType:
                     port._data = PFDict(keyType, port.dataType)
-                port.dictChanged.send(keyType)
+                port.dictChanged.emit(keyType)
                 if port.getWrapper():
                     port.getWrapper()().update()
                 port.updateConnectedDicts(checked, keyType)
@@ -1033,7 +1024,7 @@ class PinBase(IPin):
         self.dirty = True
         for i in self.affects:
             i.dirty = True
-        self.markedAsDirty.send()
+        self.markedAsDirty.emit()
 
     def hasConnections(self):
         """Return the number of connections this pin has

@@ -1,26 +1,12 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 from datetime import datetime
-from qtpy.QtWidgets import QFileDialog
-from qtpy.QtWidgets import QMessageBox
+from PySide6.QtWidgets import QFileDialog
+from PySide6.QtWidgets import QMessageBox
 
 from PyFlow.Core.Common import *
 from PyFlow.UI.UIInterfaces import IDataExporter
 from PyFlow.Core.version import Version
 from PyFlow.Core.PyCodeCompiler import Py3CodeCompiler
+from PyFlow.Core import graph_manager
 
 
 def nodeToScript(node, supportedDataTypes, supportedStructures):
@@ -120,7 +106,7 @@ class PythonScriptExporter(IDataExporter):
                     and PythonScriptExporter.displayName() == mem["EXPORTER_NAME"]
                 ):
                     pyFlowInstance.newFile()
-                    ROOT_GRAPH = pyFlowInstance.graphManager.get().findRootGraph()
+                    ROOT_GRAPH = graph_manager.findRootGraph()
                     mem["createScene"](ROOT_GRAPH)
                     pyFlowInstance.afterLoad()
 
@@ -142,7 +128,7 @@ class PythonScriptExporter(IDataExporter):
             str(PythonScriptExporter.version())
         )
 
-        rootGraph = pyFlowInstance.graphManager.get().findRootGraph()
+        rootGraph = graph_manager.findRootGraph()
 
         if len(rootGraph.getNodesList()) == 0:
             QMessageBox.warning(pyFlowInstance, "Warning", "Nothing to export!")
@@ -162,7 +148,7 @@ class PythonScriptExporter(IDataExporter):
             # for node in rootGraph.getNodesList():
             #     for outPin in node.outputs.values():
             #         for inPinName in outPin.linkedTo:
-            #             inPin = pyFlowInstance.graphManager.get().findPinByName(inPinName)
+            #             inPin = graph_manager.findPinByName(inPinName)
             #             graphScript += "{0} = ROOT_GRAPH.graphManager.findPinByName('{1}')\n".format(outPin.getFullName(), outPin.getFullName())
             #             graphScript += "{0} = ROOT_GRAPH.graphManager.findPinByName('{1}')\n".format(inPin.getFullName(), inPin.getFullName())
             #             graphScript += "connectPins({0}, {1})\n".format(outPin.getFullName(), inPin.getFullName())

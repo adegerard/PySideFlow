@@ -1,21 +1,9 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
-from qtpy import QtWidgets
-from qtpy import QtGui, QtCore
-
+from PySide6 import QtWidgets
+from PySide6 import QtGui, QtCore
+from PySide6.QtCore import (
+    Qt,
+    Signal,
+)
 from PyFlow.UI.Canvas.Painters import PinPainter
 from PyFlow import findPinClassByType, getAllPinClasses
 from PyFlow.Core.Common import PinDirection
@@ -65,7 +53,7 @@ class _PinWidget(QtWidgets.QWidget):
         self.fakeOwningNode = _FakeNode()
         self._rawPin = _FakePin()
         self._pinColor = QtGui.QColor(*findPinClassByType(self.dataType).color())
-        self.labelColor = QtCore.Qt.white
+        self.labelColor = Qt.white
         self.hovered = False
         self.pinSize = _PIN_SIZE
         self._font = QtGui.QFont("Consolas")
@@ -118,7 +106,7 @@ class _PinWidget(QtWidgets.QWidget):
     def paintEvent(self, event):
         painter = QtGui.QPainter()
         painter.begin(self)
-        painter.setPen(QtCore.Qt.NoPen)
+        painter.setPen(Qt.NoPen)
         if self.dataType == "ExecPin":
             self._rawPin.setConnected(True)
             PinPainter.asExecPin(self, painter, None, None)
@@ -130,7 +118,7 @@ class _PinWidget(QtWidgets.QWidget):
 class _PinsListWidget(QtWidgets.QListWidget):
     """docstring for _PinsListWidget."""
 
-    returnPressed = QtCore.Signal()
+    returnPressed = Signal()
 
     def __init__(self, parent=None, validPins=None):
         super(_PinsListWidget, self).__init__()
@@ -146,7 +134,7 @@ class _PinsListWidget(QtWidgets.QListWidget):
         self.setItemWidget(item, widget)
 
     def keyPressEvent(self, event):
-        if event.key() == QtCore.Qt.Key_Return:
+        if event.key() == Qt.Key_Return:
             self.returnPressed.emit()
         super(_PinsListWidget, self).keyPressEvent(event)
 
@@ -171,7 +159,7 @@ class SelectPinDialog(QtWidgets.QDialog):
 
     def __init__(self, parent=None, validPins=None):
         super(SelectPinDialog, self).__init__(None)
-        self.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         self.setWindowTitle("Select pin")
         self.setWindowIcon(QtGui.QIcon(":/pin.png"))
         self.resize(QtCore.QSize(400, 300))

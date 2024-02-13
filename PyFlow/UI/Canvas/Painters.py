@@ -1,21 +1,10 @@
-# Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-
-# http://www.apache.org/licenses/LICENSE-2.0
-
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 from math import atan2, degrees
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy.QtWidgets import QStyle
+from PySide6 import QtCore
+from PySide6 import QtGui
+from PySide6.QtWidgets import QStyle
+from PySide6.QtCore import (
+    Qt,
+)
 
 from PyFlow.UI.Canvas.UICommon import *
 from PyFlow.Core.Common import *
@@ -39,7 +28,7 @@ class NodePainter(object):
             textRect.setTop(textRect.height() - 10)
             painter.fillRect(textRect, Colors.Red.darker(130))
             painter.drawText(
-                textRect, QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter, "Deprecated"
+                textRect, Qt.AlignCenter | Qt.AlignVCenter, "Deprecated"
             )
 
     @staticmethod
@@ -52,7 +41,7 @@ class NodePainter(object):
             textRect.setTop(textRect.height() - 10)
             painter.fillRect(textRect, Colors.Yellow.darker(180))
             painter.drawText(
-                textRect, QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter, "Experimental"
+                textRect, Qt.AlignCenter | Qt.AlignVCenter, "Experimental"
             )
 
     @staticmethod
@@ -98,18 +87,18 @@ class NodePainter(object):
     @staticmethod
     def asCommentNode(node, painter, option, widget):
         frame = QtCore.QRectF(QtCore.QPointF(0, 0), node.geometry().size())
-        painter.setPen(QtCore.Qt.NoPen)
-        painter.setBrush(QtCore.Qt.darkGray)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(Qt.darkGray)
 
         color = Colors.NodeBackgrounds
         if node.isSelected():
             color = color.lighter(150)
 
         painter.setBrush(node.color)
-        pen = QtGui.QPen(QtCore.Qt.black, 0.75)
+        pen = QtGui.QPen(Qt.black, 0.75)
         if option.state & QStyle.State_Selected:
             pen.setColor(editableStyleSheet().MainColor)
-            pen.setStyle(QtCore.Qt.SolidLine)
+            pen.setStyle(Qt.SolidLine)
         painter.setPen(pen)
         painter.drawRoundedRect(frame, node.roundness, node.roundness)
 
@@ -167,8 +156,8 @@ class NodePainter(object):
         br = QtGui.QBrush(color)
         painter.setBrush(br)
 
-        pen = QtGui.QPen(QtCore.Qt.black, 0.5)
-        painter.setPen(QtCore.Qt.NoPen)
+        pen = QtGui.QPen(Qt.black, 0.5)
+        painter.setPen(Qt.NoPen)
 
         r = frame
         if lod < SWITCH_LOD:
@@ -195,7 +184,7 @@ class NodePainter(object):
                 b.setColorAt(0.5, headColor)
                 b.setColorAt(1, headColor.darker(50))
                 path = QtGui.QPainterPath()
-                path.setFillRule(QtCore.Qt.WindingFill)
+                path.setFillRule(Qt.WindingFill)
                 path.addRoundedRect(lr, node.roundness, node.roundness)
                 lr.setY(lr.y() + node.roundness)
                 path.addRect(lr)
@@ -273,8 +262,8 @@ class NodePainter(object):
 
     @staticmethod
     def asVariableGetter(node, painter, option, widget):
-        painter.setPen(QtCore.Qt.NoPen)
-        painter.setBrush(QtCore.Qt.darkGray)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(Qt.darkGray)
 
         color = node.color
         if node.isSelected():
@@ -285,18 +274,18 @@ class NodePainter(object):
         linearGrad.setColorAt(1, color.lighter(180))
         br = QtGui.QBrush(linearGrad)
         painter.setBrush(br)
-        pen = QtGui.QPen(QtCore.Qt.black, 0.5)
+        pen = QtGui.QPen(Qt.black, 0.5)
         if option.state & QStyle.State_Selected:
             pen.setColor(editableStyleSheet().MainColor)
             pen.setStyle(node.optPenSelectedType)
         painter.setPen(pen)
         painter.drawRoundedRect(node.boundingRect(), node.roundness, node.roundness)
         painter.setFont(node.nodeNameFont)
-        painter.setPen(QtGui.QPen(QtCore.Qt.white, 0.5))
+        painter.setPen(QtGui.QPen(Qt.white, 0.5))
         textRect = node.boundingRect()
         textRect.setWidth(textRect.width() - 10)
         painter.drawText(
-            textRect, QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter, node.var.name
+            textRect, Qt.AlignCenter | Qt.AlignVCenter, node.var.name
         )
 
     @staticmethod
@@ -314,7 +303,7 @@ class NodePainter(object):
         br = QtGui.QBrush(linearGrad)
         painter.setBrush(br)
 
-        pen = QtGui.QPen(QtCore.Qt.black, 0.75)
+        pen = QtGui.QPen(Qt.black, 0.75)
         width = pen.width()
         if option.state & QStyle.State_Selected:
             # pen.setColor(Colors.Yellow)
@@ -332,9 +321,9 @@ class NodePainter(object):
 # Determines how to paint a pin
 class PinPainter(object):
 
-    _execPen = QtGui.QPen(Colors.White, 0.5, QtCore.Qt.SolidLine)
-    _valuePinNamePen = QtGui.QPen(Colors.White, 0.5, QtCore.Qt.SolidLine)
-    _groupPen = QtGui.QPen(Colors.AbsoluteBlack, 0.5, QtCore.Qt.SolidLine)
+    _execPen = QtGui.QPen(Colors.White, 0.5, Qt.SolidLine)
+    _valuePinNamePen = QtGui.QPen(Colors.White, 0.5, Qt.SolidLine)
+    _groupPen = QtGui.QPen(Colors.AbsoluteBlack, 0.5, Qt.SolidLine)
 
     @staticmethod
     def asValuePin(pin, painter, option, widget):
@@ -356,7 +345,7 @@ class PinPainter(object):
                 x = frame.width() - textWidth - pin.pinSize - 1
             yCenter = textHeight - textHeight / 3
             painter.setPen(QtGui.QPen(
-                pin.labelColor, 0.5, QtCore.Qt.SolidLine))
+                pin.labelColor, 0.5, Qt.SolidLine))
             painter.drawText(x, yCenter, pin.displayName())
 
         pinCenter = pin.pinCenter()
@@ -372,7 +361,7 @@ class PinPainter(object):
             radialGrad.setColorAt(0, pin.color())
             radialGrad.setColorAt(1, pin.color())
 
-        painter.setPen(QtCore.Qt.NoPen)
+        painter.setPen(Qt.NoPen)
         if pin.hovered:
             radialGrad.setColorAt(1, pin.color().lighter(200))
             painter.setBrush(QtGui.QColor(128, 128, 128, 30))
@@ -406,13 +395,13 @@ class PinPainter(object):
                 x = frame.width() - textWidth - pin.pinSize - 1
             yCenter = textHeight - textHeight / 3
             painter.setPen(QtGui.QPen(
-                pin.labelColor, 0.5, QtCore.Qt.SolidLine))
+                pin.labelColor, 0.5, Qt.SolidLine))
             painter.drawText(x, yCenter, pin.displayName())
 
         if pin._rawPin.hasConnections():
             painter.setBrush(QtGui.QBrush(pin.color()))
         else:
-            painter.setBrush(QtCore.Qt.NoBrush)
+            painter.setBrush(Qt.NoBrush)
         pinCenter = pin.pinCenter()
         xOffset = (
             pinCenter.x() - pin.pinSize
@@ -430,7 +419,7 @@ class PinPainter(object):
         ).translated(xOffset, 1)
         painter.drawPolygon(arrow)
         if pin.hovered:
-            painter.setPen(QtCore.Qt.NoPen)
+            painter.setPen(Qt.NoPen)
             painter.setBrush(QtGui.QColor(128, 128, 128, 30))
             painter.drawRoundedRect(frame, 3, 3)
 
@@ -438,7 +427,7 @@ class PinPainter(object):
     def asGroupPin(pin, painter, option, widget):
         painter.setPen(PinPainter._groupPen)
         painter.setBrush(QtGui.QBrush(Colors.AbsoluteBlack))
-        # painter.setBrush(QtCore.Qt.NoBrush)
+        # painter.setBrush(Qt.NoBrush)
         if not pin.expanded:
             arrow = QtGui.QPolygonF(
                 [
@@ -468,7 +457,7 @@ class PinPainter(object):
         halfPinSize = pin.pinSize / 2
 
         painter.setBrush(QtGui.QBrush(pin.color()))
-        painter.setPen(QtGui.QPen(QtCore.Qt.black, 0.2))
+        painter.setPen(QtGui.QPen(Qt.black, 0.2))
         for row in range(gridSize):
             for column in range(gridSize):
                 x = row * cellW + pinCenter.x() - halfPinSize
@@ -491,7 +480,7 @@ class PinPainter(object):
             painter.drawText(x, yCenter, pin.name)
 
             if pin.hovered:
-                painter.setPen(QtCore.Qt.NoPen)
+                painter.setPen(Qt.NoPen)
                 painter.setBrush(QtGui.QColor(128, 128, 128, 30))
                 painter.drawRoundedRect(frame, 3, 3)
 
@@ -506,7 +495,7 @@ class PinPainter(object):
 
         painter.setBrush(QtGui.QBrush(pin.color()))
         keyPin = findPinClassByType(pin._rawPin._keyType)
-        painter.setPen(QtGui.QPen(QtCore.Qt.black, 0.2))
+        painter.setPen(QtGui.QPen(Qt.black, 0.2))
         for row in range(3):
             x = pinCenter.x() - halfPinSize
             y = row * cellH + (halfPinSize / 2) + pin.pinCircleDrawOffset.y()
@@ -532,7 +521,7 @@ class PinPainter(object):
             painter.drawText(x, yCenter, pin.name)
 
             if pin.hovered:
-                painter.setPen(QtCore.Qt.NoPen)
+                painter.setPen(Qt.NoPen)
                 painter.setBrush(QtGui.QColor(128, 128, 128, 30))
                 painter.drawRoundedRect(frame, 3, 3)
 

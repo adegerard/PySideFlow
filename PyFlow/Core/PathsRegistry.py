@@ -1,5 +1,5 @@
 from PyFlow.Core.Common import *
-from PyFlow.Core.GraphManager import GraphManagerSingleton
+from PyFlow.Core import graph_manager
 
 
 @SingletonDecorator
@@ -10,7 +10,7 @@ class PathsRegistry(object):
         self._data = {}
 
     def rebuild(self):
-        man = GraphManagerSingleton().get()
+        man = graph_manager
         allNodes = man.getAllNodes()
         self._data.clear()
         for node in allNodes:

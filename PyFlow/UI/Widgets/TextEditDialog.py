@@ -12,18 +12,21 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-
-from qtpy import QtCore, QtGui
-from qtpy.QtWidgets import QDialog
-from qtpy.QtWidgets import QVBoxLayout
-from qtpy.QtWidgets import QDialogButtonBox
-from qtpy.QtWidgets import QTextEdit
-
+from PySide6.QtCore import (
+    Signal,
+)
+from PySide6 import QtCore, QtGui
+from PySide6.QtWidgets import (
+    QDialog,
+    QVBoxLayout,
+    QDialogButtonBox,
+    QTextEdit,
+)
 
 class TextEditingField(QTextEdit):
     """docstring for TextEditingField."""
 
-    accepted = QtCore.Signal()
+    accepted = Signal()
 
     def __init__(self, parent=None):
         super(TextEditingField, self).__init__(parent)
@@ -31,8 +34,8 @@ class TextEditingField(QTextEdit):
     def keyPressEvent(self, event):
         super(TextEditingField, self).keyPressEvent(event)
         if (
-            event.modifiers() == QtCore.Qt.ControlModifier
-            and event.key() == QtCore.Qt.Key_Return
+            event.modifiers() == Qt.ControlModifier
+            and event.key() == Qt.Key_Return
         ):
             self.accepted.emit()
 
@@ -40,7 +43,7 @@ class TextEditingField(QTextEdit):
 class TextEditDialog(QDialog):
     def __init__(self, font, textColor, parent=None):
         super(TextEditDialog, self).__init__(parent)
-        self.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         self.resize(QtCore.QSize(400, 300))
         self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(2, 2, 2, 2)

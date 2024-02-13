@@ -1,23 +1,10 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 from PyFlow.UI.Canvas.UICommon import clearLayout
 from PyFlow.UI.Widgets.EditPropertiesWidget import EditPropertiesTreeWidget
-from qtpy import QtWidgets
-from qtpy import QtCore, QtGui
-
+from PySide6 import QtWidgets
+from PySide6 import QtCore, QtGui
+from PySide6.QtCore import (
+    Signal,
+)
 
 # Framework
 class HeadButton(QtWidgets.QPushButton):
@@ -331,7 +318,7 @@ class CollapsibleGroupBox(QtWidgets.QWidget):
 class PropertiesWidget(QtWidgets.QWidget):
     """docstring for PropertiesWidget."""
 
-    spawnDuplicate = QtCore.Signal()
+    spawnDuplicate = Signal()
 
     def __init__(self, parent=None, searchByHeaders=False):
         super(PropertiesWidget, self).__init__(parent)

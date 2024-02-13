@@ -1,23 +1,10 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 from collections import defaultdict
 from enum import Enum
 
-from qtpy import QtCore, QtGui
-
+from PySide6 import QtCore, QtGui
+from PySide6.QtCore import (
+    Qt,
+)
 from PyFlow.Core.Common import *
 
 
@@ -32,9 +19,9 @@ class InputAction(object):
             name="defaultName",
             actionType=InputActionType.Keyboard,
             group="default",
-            mouse=QtCore.Qt.NoButton,
+            mouse=Qt.NoButton,
             key=None,
-            modifiers=QtCore.Qt.NoModifier,
+            modifiers=Qt.NoModifier,
     ):
         self.__actionType = actionType
         self._name = name
@@ -81,7 +68,7 @@ class InputAction(object):
         return self.__data
 
     def setMouseButton(self, btn):
-        assert isinstance(btn, QtCore.Qt.MouseButton)
+        assert isinstance(btn, Qt.MouseButton)
         self.__data["mouse"] = btn
 
     def getMouseButton(self):
@@ -90,13 +77,13 @@ class InputAction(object):
     def setKey(self, key=None):
         if key is None:
             key = []
-        assert isinstance(key, QtCore.Qt.Key)
+        assert isinstance(key, Qt.Key)
         self.__data["key"] = key
 
     def getKey(self):
         return self.__data["key"]
 
-    def setModifiers(self, modifiers=QtCore.Qt.NoModifier):
+    def setModifiers(self, modifiers=Qt.NoModifier):
         self.__data["modifiers"] = modifiers
 
     def getModifiers(self):
@@ -105,23 +92,23 @@ class InputAction(object):
     @staticmethod
     def _modifiersToList(mods):
         result = []
-        if mods & QtCore.Qt.ShiftModifier:
-            result.append(QtCore.Qt.ShiftModifier)
-        if mods & QtCore.Qt.ControlModifier:
-            result.append(QtCore.Qt.ControlModifier)
-        if mods & QtCore.Qt.AltModifier:
-            result.append(QtCore.Qt.AltModifier)
-        if mods & QtCore.Qt.MetaModifier:
-            result.append(QtCore.Qt.MetaModifier)
-        if mods & QtCore.Qt.KeypadModifier:
-            result.append(QtCore.Qt.KeypadModifier)
-        if mods & QtCore.Qt.GroupSwitchModifier:
-            result.append(QtCore.Qt.GroupSwitchModifier)
+        if mods & Qt.ShiftModifier:
+            result.append(Qt.ShiftModifier)
+        if mods & Qt.ControlModifier:
+            result.append(Qt.ControlModifier)
+        if mods & Qt.AltModifier:
+            result.append(Qt.AltModifier)
+        if mods & Qt.MetaModifier:
+            result.append(Qt.MetaModifier)
+        if mods & Qt.KeypadModifier:
+            result.append(Qt.KeypadModifier)
+        if mods & Qt.GroupSwitchModifier:
+            result.append(Qt.GroupSwitchModifier)
         return result
 
     @staticmethod
     def _listOfModifiersToEnum(modifiersList):
-        result = QtCore.Qt.NoModifier
+        result = Qt.NoModifier
         for mod in modifiersList:
             result = result | mod
         return result
@@ -143,13 +130,13 @@ class InputAction(object):
         try:
             self._name = jsonData["name"]
             self._group = jsonData["group"]
-            self.__data["mouse"] = QtCore.Qt.MouseButton(jsonData["mouse"])
+            self.__data["mouse"] = Qt.MouseButton(jsonData["mouse"])
             keyJson = jsonData["key"]
             self.__data["key"] = (
-                QtCore.Qt.Key(keyJson) if isinstance(keyJson, int) else None
+                Qt.Key(keyJson) if isinstance(keyJson, int) else None
             )
             self.__data["modifiers"] = self._listOfModifiersToEnum(
-                [QtCore.Qt.KeyboardModifier(i) for i in jsonData["modifiers"]]
+                [Qt.KeyboardModifier(i) for i in jsonData["modifiers"]]
             )
             self.__actionType = InputActionType(jsonData["actionType"])
             return self

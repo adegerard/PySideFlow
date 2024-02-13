@@ -25,8 +25,6 @@ setup(
     },
     classifiers=["License :: Appache-2.0"],
     install_requires=[
-        "qtpy",
-        "blinker",
         "docutils",
         "SQLAlchemy",
         "requests",

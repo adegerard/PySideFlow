@@ -1,39 +1,29 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
-from qtpy import QtCore, QtGui
-from qtpy.QtWidgets import QComboBox, QCompleter
-
+from PySide6 import QtCore, QtGui
+from PySide6.QtCore import (
+    Signal,
+)
+from PySide6.QtWidgets import (
+    QComboBox,
+    QCompleter,
+)
 
 class EnumComboBox(QComboBox):
-    changeCallback = QtCore.Signal(str)
-    textChangedCallback = QtCore.Signal(str)
+    changeCallback = Signal(str)
+    textChangedCallback = Signal(str)
 
     def __init__(self, values=None, parent=None):
         super(EnumComboBox, self).__init__(parent)
 
         if values is None:
             values = []
-        self.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.setFocusPolicy(Qt.StrongFocus)
         self.setEditable(True)
         self.completer = QCompleter(self)
 
         # always show all completions
         self.completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
         self.pFilterModel = QtCore.QSortFilterProxyModel(self)
-        self.pFilterModel.setFilterCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.pFilterModel.setFilterCaseSensitivity(Qt.CaseInsensitive)
 
         #self.setInsertPolicy(self.NoInsert)
 
@@ -86,7 +76,7 @@ class EnumComboBox(QComboBox):
 
 if __name__ == "__main__":
     import sys
-    from qtpy.QtWidgets import QApplication
+    from PySide6.QtWidgets import QApplication
     a = QApplication(sys.argv)
 
     def clb(string):

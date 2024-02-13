@@ -1,21 +1,11 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 import uuid
-from qtpy import QtWidgets
-from qtpy import QtGui, QtCore
+from PySide6 import QtWidgets
+from PySide6 import QtGui
+from PySide6.QtCore import (
+    Qt,
+    QSize,
+    QEvent
+)
 
 from PyFlow.UI.Utils.stylesheet import editableStyleSheet
 
@@ -193,10 +183,10 @@ class DockTool(QtWidgets.QDockWidget, ToolBase):
         self.setToolTip(self.toolTip())
         #self.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
         self.setAllowedAreas(
-            QtCore.Qt.BottomDockWidgetArea
-            | QtCore.Qt.LeftDockWidgetArea
-            | QtCore.Qt.RightDockWidgetArea
-            | QtCore.Qt.TopDockWidgetArea
+            Qt.BottomDockWidgetArea
+            | Qt.LeftDockWidgetArea
+            | Qt.RightDockWidgetArea
+            | Qt.TopDockWidgetArea
         )
         self.setObjectName(self.uniqueName())
         self.setTitleBarWidget(DockTitleBar(self))
@@ -204,7 +194,7 @@ class DockTool(QtWidgets.QDockWidget, ToolBase):
 
     @staticmethod
     def defaultDockArea():
-        return QtCore.Qt.LeftDockWidgetArea
+        return Qt.LeftDockWidgetArea
 
     @staticmethod
     def isSingleton():
@@ -255,7 +245,7 @@ class DockTitleBar(QtWidgets.QWidget):
         self.titleEdit.hide()
         self.titleEdit.editingFinished.connect(self.finishEdit)
 
-        self.buttonSize = QtCore.QSize(14, 14)
+        self.buttonSize = QSize(14, 14)
 
         self.dockButton = QtWidgets.QToolButton(self)
         self.dockButton.setIcon(QtGui.QIcon(":/split_window.png"))
@@ -285,7 +275,7 @@ class DockTitleBar(QtWidgets.QWidget):
         dockWidget.topLevelChanged.connect(self.ChangeFloatingStyle)
 
     def eventFilter(self, source, event):
-        if event.type() == QtCore.QEvent.WindowTitleChange:
+        if event.type() == QEvent.WindowTitleChange:
             self.setTitle(source.windowTitle())
         return super(DockTitleBar, self).eventFilter(source, event)
 

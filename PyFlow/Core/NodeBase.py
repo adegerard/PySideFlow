@@ -1,19 +1,8 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
-from blinker import Signal
+from PySide6.QtCore import (
+    QObject,
+    Qt,
+    Signal,
+)
 import uuid
 from collections import OrderedDict
 from copy import copy
@@ -27,6 +16,7 @@ from PyFlow.Core.Interfaces import INode
 from PyFlow import CreateRawPin
 
 from datetime import datetime
+# from PyFlow.Core import graph_manager
 
 
 class NodePinsSuggestionsHelper(object):
@@ -58,7 +48,15 @@ class NodePinsSuggestionsHelper(object):
         self.outputStructs.add(struct)
 
 
-class NodeBase(INode):
+class NodeBase(INode, QObject):
+    killed = Signal()
+    tick = Signal(float)
+    setDirty = Signal()
+    computing = Signal()
+    computed = Signal()
+    errorOccurred = Signal(object)
+    errorCleared = Signal()
+
     _packageName = ""
 
     def __init__(self, name, uid=None):
@@ -67,13 +65,7 @@ class NodeBase(INode):
         self.cacheMaxSize = 1000
         self.cache = {}
 
-        self.killed = Signal()
-        self.tick = Signal(float)
-        self.setDirty = Signal()
-        self.computing = Signal()
-        self.computed = Signal()
-        self.errorOccurred = Signal(object)
-        self.errorCleared = Signal()
+
 
         self.dirty = True
         self._uid = uuid.uuid4() if uid is None else uid
@@ -145,11 +137,11 @@ class NodeBase(INode):
 
     def clearError(self):
         self._lastError = None
-        self.errorCleared.send()
+        self.errorCleared.emit()
 
     def setError(self, err):
         self._lastError = str(err)
-        self.errorOccurred.send(self._lastError)
+        self.errorOccurred.emit(self._lastError)
 
     def checkForErrors(self):
         failedPins = {}
@@ -327,7 +319,8 @@ class NodeBase(INode):
         return template
 
     def isUnderActiveGraph(self):
-        return self.graph() == self.graph().graphManager.activeGraph()
+        # return self.graph() == graph_manager.activeGraph()
+        return True
 
     def kill(self, *args, **kwargs):
         from PyFlow.Core.PathsRegistry import PathsRegistry
@@ -335,7 +328,7 @@ class NodeBase(INode):
         if self.uid not in self.graph().getNodes():
             return
 
-        self.killed.send()
+        self.killed.emit()
 
         for pin in self.inputs.values():
             pin.kill()
@@ -346,7 +339,7 @@ class NodeBase(INode):
         PathsRegistry().rebuild()
 
     def Tick(self, delta):
-        self.tick.send(delta)
+        self.tick.emit(delta)
 
     @staticmethod
     def category():
@@ -385,7 +378,7 @@ class NodeBase(INode):
         start = datetime.now()
         # if not self.isValid():
         #    return
-        self.computing.send()
+        self.computing.emit()
         if self.bCacheEnabled:
             if self.isDirty():
                 try:
@@ -404,7 +397,7 @@ class NodeBase(INode):
                 self.setError(traceback.format_exc())
         delta = datetime.now() - start
         self._computingTime = delta
-        self.computed.send()
+        self.computed.emit()
 
     # INode interface
 
@@ -517,7 +510,7 @@ class NodeBase(INode):
             p.enableOptions(PinOptions.ArraySupported)
 
         if callback:
-            p.onExecute.connect(callback, weak=False)
+            p.onExecute.connect(callback)
 
         if defaultValue is not None or dataType == "AnyPin":
             p.setDefaultValue(defaultValue)
@@ -540,9 +533,14 @@ class NodeBase(INode):
             p.updateConstraint(constraint)
         if structConstraint is not None:
             p.updateStructConstraint(structConstraint)
-        p.dataBeenSet.connect(self.setDirty.send)
-        p.markedAsDirty.connect(self.setDirty.send)
+        p.dataBeenSet.connect(self.dirty_modified)
+        p.markedAsDirty.connect(self.dirty_modified)
         return p
+
+    def dirty_modified(self) -> None:
+        self.setDirty.emit()
+
+
 
     def createOutputPin(
         self,

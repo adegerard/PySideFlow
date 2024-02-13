@@ -8,7 +8,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from qtpy import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 class Ui_Form(object):
     def setupUi(self, Form):

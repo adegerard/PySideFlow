@@ -1,21 +1,9 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
 
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
-
-from qtpy.QtWidgets import *
-from qtpy import QtCore, QtGui
+from PySide6.QtCore import (
+    Qt,
+    QRect,
+)
+from PySide6.QtWidgets import *
 
 from PyFlow.ConfigManager import ConfigManager
 from PyFlow.Core.Common import SingletonDecorator
@@ -62,13 +50,13 @@ class PreferencesWindow(QMainWindow):
         self.verticalLayout.setContentsMargins(1, 1, 1, 1)
         self.verticalLayout.setObjectName("verticalLayout")
         self.splitter = QSplitter(self.centralWidget)
-        self.splitter.setOrientation(QtCore.Qt.Horizontal)
+        self.splitter.setOrientation(Qt.Horizontal)
         self.splitter.setObjectName("splitter")
         self.scrollArea = QScrollArea(self.splitter)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 497, 596))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 497, 596))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.scrollArea.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
         self.verticalLayout_3 = QVBoxLayout(self.scrollAreaWidgetContents)

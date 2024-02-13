@@ -1,0 +1,571 @@
+{
+    "name": "root",
+    "category": "",
+    "vars": [
+        {
+            "name": "var",
+            "value": "false",
+            "dataType": "BoolPin",
+            "accessLevel": "public",
+            "package": "PyFlowBase",
+            "uuid": "8e8f0c81-ba7b-4d78-b0f3-d8b5ff35a207",
+            "structure": "Single"
+        }
+    ],
+    "nodes": [
+        {
+            "package": "PyFlowBase",
+            "lib": "StringLib",
+            "type": "concat",
+            "owningGraphName": "root",
+            "name": "concat",
+            "uuid": "6d4ef54f-722d-46cd-b1bb-5d3dbd0a7d7e",
+            "inputs": [
+                {
+                    "name": "s2",
+                    "package": "PyFlowBase",
+                    "fullName": "concat_s2",
+                    "dataType": "AnyPin",
+                    "direction": 0,
+                    "value": "[]",
+                    "uuid": "d5f7c328-3c55-4dc4-add7-260a6d78efe0",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "split",
+                            "outPinId": 1,
+                            "rhsNodeName": "concat",
+                            "inPinId": 2,
+                            "lhsNodeUid": "d7123120-286f-4fb4-b5d5-f7651849d915",
+                            "rhsNodeUid": "6d4ef54f-722d-46cd-b1bb-5d3dbd0a7d7e"
+                        }
+                    ],
+                    "pinIndex": 2,
+                    "options": [
+                        16,
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false,
+                    "currDataType": "StringPin"
+                },
+                {
+                    "name": "s1",
+                    "package": "PyFlowBase",
+                    "fullName": "concat_s1",
+                    "dataType": "AnyPin",
+                    "direction": 0,
+                    "value": null,
+                    "uuid": "83b97109-4bce-4bcd-b171-2173df5aa994",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "arraySum",
+                            "outPinId": 1,
+                            "rhsNodeName": "concat",
+                            "inPinId": 1,
+                            "lhsNodeUid": "34866f6d-a9ca-42af-91bf-636a68ff183f",
+                            "rhsNodeUid": "6d4ef54f-722d-46cd-b1bb-5d3dbd0a7d7e"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        16,
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "package": "PyFlowBase",
+                    "fullName": "concat_out",
+                    "dataType": "StringPin",
+                    "direction": 1,
+                    "value": "\"\"",
+                    "uuid": "310997ac-aafa-4faf-b00e-89cfbf5702a9",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "concat",
+                            "outPinId": 1,
+                            "rhsNodeName": "lstrip",
+                            "inPinId": 2,
+                            "lhsNodeUid": "6d4ef54f-722d-46cd-b1bb-5d3dbd0a7d7e",
+                            "rhsNodeUid": "6d06221c-8dad-46b6-a141-092dec0ae302"
+                        },
+                        {
+                            "lhsNodeName": "concat",
+                            "outPinId": 1,
+                            "rhsNodeName": "equal",
+                            "inPinId": 1,
+                            "lhsNodeUid": "6d4ef54f-722d-46cd-b1bb-5d3dbd0a7d7e",
+                            "rhsNodeUid": "0e357acb-62fa-4779-a0df-16d391f48595"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "meta": {
+                "var": {},
+                "label": "concat"
+            },
+            "wrapper": {
+                "collapsed": false,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">concat</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                }
+            },
+            "x": -136.94547594332676,
+            "y": -5.732724944166996
+        },
+        {
+            "package": "PyFlowBase",
+            "lib": "StringLib",
+            "type": "equal",
+            "owningGraphName": "root",
+            "name": "equal",
+            "uuid": "0e357acb-62fa-4779-a0df-16d391f48595",
+            "inputs": [
+                {
+                    "name": "r",
+                    "package": "PyFlowBase",
+                    "fullName": "equal_r",
+                    "dataType": "StringPin",
+                    "direction": 0,
+                    "value": "\"\"",
+                    "uuid": "ff8541b7-656d-4e6d-a36d-171c782047fd",
+                    "linkedTo": [],
+                    "pinIndex": 2,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                },
+                {
+                    "name": "l",
+                    "package": "PyFlowBase",
+                    "fullName": "equal_l",
+                    "dataType": "StringPin",
+                    "direction": 0,
+                    "value": "\"\"",
+                    "uuid": "a8a31944-df33-4c18-b597-aad578d9be04",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "concat",
+                            "outPinId": 1,
+                            "rhsNodeName": "equal",
+                            "inPinId": 1,
+                            "lhsNodeUid": "6d4ef54f-722d-46cd-b1bb-5d3dbd0a7d7e",
+                            "rhsNodeUid": "0e357acb-62fa-4779-a0df-16d391f48595"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "package": "PyFlowBase",
+                    "fullName": "equal_out",
+                    "dataType": "BoolPin",
+                    "direction": 1,
+                    "value": "false",
+                    "uuid": "96b9a1b4-56dc-44ab-a01d-555b4f72821e",
+                    "linkedTo": [],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "meta": {
+                "var": {},
+                "label": "equal"
+            },
+            "wrapper": {
+                "collapsed": false,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">equal</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                }
+            },
+            "x": 15.776070364636809,
+            "y": -149.69585650693
+        },
+        {
+            "package": "PyFlowBase",
+            "lib": null,
+            "type": "stringToArray",
+            "owningGraphName": "root",
+            "name": "stringToArray",
+            "uuid": "7e003323-a540-4ea6-8fb3-1bbc6e994317",
+            "inputs": [
+                {
+                    "name": "data",
+                    "package": "PyFlowBase",
+                    "fullName": "stringToArray_data",
+                    "dataType": "StringPin",
+                    "direction": 0,
+                    "value": "\"\"",
+                    "uuid": "2475237f-c6bf-47be-9fd7-5749600d203a",
+                    "linkedTo": [],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "package": "PyFlowBase",
+                    "fullName": "stringToArray_out",
+                    "dataType": "AnyPin",
+                    "direction": 1,
+                    "value": null,
+                    "uuid": "ec07239b-d047-46fe-8eda-9b79d79aa43a",
+                    "linkedTo": [],
+                    "pinIndex": 1,
+                    "options": [
+                        4,
+                        16,
+                        256
+                    ],
+                    "structure": 1,
+                    "alwaysList": true,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                },
+                {
+                    "name": "result",
+                    "package": "PyFlowBase",
+                    "fullName": "stringToArray_result",
+                    "dataType": "BoolPin",
+                    "direction": 1,
+                    "value": "false",
+                    "uuid": "36f95ba3-ba5e-4cb0-877b-db2eaa6dbd29",
+                    "linkedTo": [],
+                    "pinIndex": 2,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "meta": {
+                "var": {},
+                "label": "stringToArray"
+            },
+            "wrapper": {
+                "collapsed": false,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">stringToArray</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                }
+            },
+            "x": -346.93757128285876,
+            "y": -197.67373247511722
+        },
+        {
+            "package": "PyFlowBase",
+            "lib": "ArrayLib",
+            "type": "arraySum",
+            "owningGraphName": "root",
+            "name": "arraySum",
+            "uuid": "34866f6d-a9ca-42af-91bf-636a68ff183f",
+            "inputs": [
+                {
+                    "name": "Value",
+                    "package": "PyFlowBase",
+                    "fullName": "arraySum_Value",
+                    "dataType": "AnyPin",
+                    "direction": 0,
+                    "value": null,
+                    "uuid": "94c73553-2555-4b28-bf25-a725a2bdceab",
+                    "linkedTo": [],
+                    "pinIndex": 1,
+                    "options": [
+                        4,
+                        16,
+                        256
+                    ],
+                    "structure": 1,
+                    "alwaysList": true,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "package": "PyFlowBase",
+                    "fullName": "arraySum_out",
+                    "dataType": "AnyPin",
+                    "direction": 1,
+                    "value": null,
+                    "uuid": "eb51bfb1-3861-4e7a-be84-d6bea3281120",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "arraySum",
+                            "outPinId": 1,
+                            "rhsNodeName": "concat",
+                            "inPinId": 1,
+                            "lhsNodeUid": "34866f6d-a9ca-42af-91bf-636a68ff183f",
+                            "rhsNodeUid": "6d4ef54f-722d-46cd-b1bb-5d3dbd0a7d7e"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        16,
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "meta": {
+                "var": {},
+                "label": "arraySum"
+            },
+            "wrapper": {
+                "collapsed": false,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">arraySum</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                }
+            },
+            "x": -344.9204923800519,
+            "y": -55.133490010066424
+        },
+        {
+            "package": "PyFlowBase",
+            "lib": "StringLib",
+            "type": "lstrip",
+            "owningGraphName": "root",
+            "name": "lstrip",
+            "uuid": "6d06221c-8dad-46b6-a141-092dec0ae302",
+            "inputs": [
+                {
+                    "name": "chars",
+                    "package": "PyFlowBase",
+                    "fullName": "lstrip_chars",
+                    "dataType": "StringPin",
+                    "direction": 0,
+                    "value": "\"\"",
+                    "uuid": "24bbe693-255a-4c27-8862-614caded8275",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "concat",
+                            "outPinId": 1,
+                            "rhsNodeName": "lstrip",
+                            "inPinId": 2,
+                            "lhsNodeUid": "6d4ef54f-722d-46cd-b1bb-5d3dbd0a7d7e",
+                            "rhsNodeUid": "6d06221c-8dad-46b6-a141-092dec0ae302"
+                        }
+                    ],
+                    "pinIndex": 2,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                },
+                {
+                    "name": "s",
+                    "package": "PyFlowBase",
+                    "fullName": "lstrip_s",
+                    "dataType": "StringPin",
+                    "direction": 0,
+                    "value": "\"\"",
+                    "uuid": "2482ff27-cc71-478d-b3f3-fa6fc065163a",
+                    "linkedTo": [],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "package": "PyFlowBase",
+                    "fullName": "lstrip_out",
+                    "dataType": "StringPin",
+                    "direction": 1,
+                    "value": "\"\"",
+                    "uuid": "5d8ddcb0-9d31-4e88-8f01-b5fa68d63ba9",
+                    "linkedTo": [],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "meta": {
+                "var": {},
+                "label": "lstrip"
+            },
+            "wrapper": {
+                "collapsed": false,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">lstrip</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                }
+            },
+            "x": 98.45798916340563,
+            "y": 41.97977988480093
+        },
+        {
+            "package": "PyFlowBase",
+            "lib": "StringLib",
+            "type": "split",
+            "owningGraphName": "root",
+            "name": "split",
+            "uuid": "d7123120-286f-4fb4-b5d5-f7651849d915",
+            "inputs": [
+                {
+                    "name": "s",
+                    "package": "PyFlowBase",
+                    "fullName": "split_s",
+                    "dataType": "StringPin",
+                    "direction": 0,
+                    "value": "\"\"",
+                    "uuid": "3ad9afe4-91c8-4338-816a-05118c422ec9",
+                    "linkedTo": [],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                },
+                {
+                    "name": "sep",
+                    "package": "PyFlowBase",
+                    "fullName": "split_sep",
+                    "dataType": "StringPin",
+                    "direction": 0,
+                    "value": "\"\"",
+                    "uuid": "5644d707-23d9-4b74-a5de-7a6be79ccff8",
+                    "linkedTo": [],
+                    "pinIndex": 2,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "package": "PyFlowBase",
+                    "fullName": "split_out",
+                    "dataType": "StringPin",
+                    "direction": 1,
+                    "value": "[]",
+                    "uuid": "6c585acf-6e1f-4b2b-9ee5-a83ad0677f22",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "split",
+                            "outPinId": 1,
+                            "rhsNodeName": "concat",
+                            "inPinId": 2,
+                            "lhsNodeUid": "d7123120-286f-4fb4-b5d5-f7651849d915",
+                            "rhsNodeUid": "6d4ef54f-722d-46cd-b1bb-5d3dbd0a7d7e"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        1,
+                        4,
+                        256
+                    ],
+                    "structure": 1,
+                    "alwaysList": true,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "meta": {
+                "var": {},
+                "label": "split"
+            },
+            "wrapper": {
+                "collapsed": false,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">split</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                }
+            },
+            "x": -341.3324476120166,
+            "y": 56.610325526496595
+        }
+    ],
+    "depth": 1,
+    "isRoot": true,
+    "parentGraphName": "None",
+    "fileVersion": "2.0.1",
+    "activeGraph": "root"
+}

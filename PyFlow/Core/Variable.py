@@ -1,49 +1,45 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
-from blinker import Signal
+from PySide6.QtCore import (
+    QObject,
+    Qt,
+    Signal,
+)
 import json
 import uuid
 
 from PyFlow import getPinDefaultValueByType
+from PyFlow.Core import GraphBase
 from PyFlow.Core.Common import *
 from PyFlow.Core.Interfaces import IItemBase
 
 
-class Variable(IItemBase):
+class Variable(IItemBase, QObject):
     """Variable representation
 
     :var nameChanged: Fired when variable name was changed
-    :vartype nameChanged: :class:`~blinker.base.Signal`
+    :vartype nameChanged: :class:`~PySide6.QtCore.base.Signal`
     :var valueChanged: Fired when variable value was changed
-    :vartype valueChanged: :class:`~blinker.base.Signal`
+    :vartype valueChanged: :class:`~PySide6.QtCore.base.Signal`
     :var dataTypeChanged: Fired when variable data type was changed
-    :vartype dataTypeChanged: :class:`~blinker.base.Signal`
+    :vartype dataTypeChanged: :class:`~PySide6.QtCore.base.Signal`
     :var structureChanged: Fired when variable structure was changed
-    :vartype structureChanged: :class:`~blinker.base.Signal`
+    :vartype structureChanged: :class:`~PySide6.QtCore.base.Signal`
     :var accessLevelChanged: Fired when variable access level was changed
-    :vartype accessLevelChanged: :class:`~blinker.base.Signal`
+    :vartype accessLevelChanged: :class:`~PySide6.QtCore.base.Signal`
     :var killed: Fired when variable was killed
-    :vartype killed: :class:`~blinker.base.Signal`
+    :vartype killed: :class:`~PySide6.QtCore.base.Signal`
     :var graph: Reference to owning graph
     :vartype graph: :class:`~PyFlow.Core.GraphBase.GraphBase`
     """
+    nameChanged = Signal(str)
+    valueChanged = Signal(str)
+    dataTypeChanged = Signal(str)
+    structureChanged = Signal(str)
+    accessLevelChanged = Signal(str)
+    killed = Signal()
 
     def __init__(
         self,
-        graph,
+        graph: GraphBase,
         value,
         name,
         dataType,
@@ -69,14 +65,9 @@ class Variable(IItemBase):
         :type uid: :class:`~uuid.UUID`
         """
         super(Variable, self).__init__()
-        self.nameChanged = Signal(str)
-        self.valueChanged = Signal(str)
-        self.dataTypeChanged = Signal(str)
-        self.structureChanged = Signal(str)
-        self.accessLevelChanged = Signal(str)
-        self.killed = Signal()
 
-        self.graph = graph
+
+        self.graph: GraphBase = graph
 
         self._name = name
         self._value = value
@@ -108,7 +99,7 @@ class Variable(IItemBase):
     def findRefs(self):
         """Returns all getVar and setVar instances for variable
         """
-        return self.graph.graphManager.findVariableRefs(self)
+        return self.graph.graph_manager.findVariableRefs(self)
 
     def updatePackageName(self):
         self._packageName = findPinClassByType(self._dataType)._packageName
@@ -125,7 +116,7 @@ class Variable(IItemBase):
     def packageName(self, value):
         assert isinstance(value, str)
         self._packageName = value
-        self.packageNameChanged.send(value)  # TODO: nonexistent, single use
+        self.packageNameChanged.emit(value)  # TODO: nonexistent, single use
 
     @property
     def accessLevel(self):
@@ -139,7 +130,7 @@ class Variable(IItemBase):
     def accessLevel(self, value):
         assert isinstance(value, AccessLevel)
         self._accessLevel = value
-        self.accessLevelChanged.send(value)
+        self.accessLevelChanged.emit(value)
 
     @property
     def name(self):
@@ -149,7 +140,7 @@ class Variable(IItemBase):
     def name(self, value):
         assert isinstance(value, str)
         self._name = value
-        self.nameChanged.send(value)
+        self.nameChanged.emit(value)
 
     @property
     def value(self):
@@ -170,10 +161,10 @@ class Variable(IItemBase):
         try:
             if self._value != value or type(self._value) != type(value):
                 self._value = value
-                self.valueChanged.send(value)
+                self.valueChanged.emit(value)
         except:
             self._value = value
-            self.valueChanged.send(value)
+            self.valueChanged.emit(value)
 
     @property
     def dataType(self):
@@ -190,7 +181,7 @@ class Variable(IItemBase):
             self._dataType = value
             self.updatePackageName()
             self.value = getPinDefaultValueByType(value)
-            self.dataTypeChanged.send(value)
+            self.dataTypeChanged.emit(value)
 
     @property
     def structure(self):
@@ -209,7 +200,7 @@ class Variable(IItemBase):
                 self.value = list()
             if self._structure == StructureType.Dict:
                 self.value = PFDict("IntPin", "BoolPin")
-            self.structureChanged.send(self._structure)
+            self.structureChanged.emit(self._structure)
 
     @property
     def uid(self):

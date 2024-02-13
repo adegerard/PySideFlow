@@ -1,4 +1,4 @@
-from qtpy import QtGui
+from PySide6 import QtGui
 
 from PyFlow.UI.Tool.Tool import DockTool
 

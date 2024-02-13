@@ -16,11 +16,12 @@ import os
 import json
 import threading
 
-from qtpy.QtWidgets import *
-from qtpy import QtGui
+from PySide6.QtWidgets import *
+from PySide6 import QtGui
 from PyFlow import INITIALIZE
 from PyFlow.Core.Common import *
-from PyFlow.Core.GraphManager import GraphManagerSingleton
+from PyFlow.Core import graph_manager
+
 from PyFlow.UI.Canvas.UINodeBase import getUINodeInstance
 from PyFlow.UI.Utils.stylesheet import editableStyleSheet
 from PyFlow.UI.Widgets.PropertiesFramework import CollapsibleFormWidget
@@ -47,7 +48,7 @@ def run(filePath):
         # Initialize packages
         try:
             INITIALIZE()
-            man = GraphManagerSingleton().get()
+            man = graph_manager
             man.deserialize(data)
             grph = man.findRootGraph()
             inputs = grph.getNodesByClassName("graphInputs")

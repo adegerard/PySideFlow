@@ -1,21 +1,10 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
-from qtpy import QtCore
-from qtpy.QtWidgets import *
-
+from PySide6.QtCore import (
+    Qt,
+)
+from PySide6.QtGui import (
+    QAction,
+)
+from PySide6.QtWidgets import *
 from PyFlow.UI.Tool.Tool import DockTool
 from PyFlow.UI.Widgets.PropertiesFramework import *
 
@@ -32,7 +21,7 @@ class SearchResultsTool(DockTool):
         self.scrollArea.setWidgetResizable(True)
 
         self.content = PropertiesWidget()
-        self.content.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.content.setContextMenuPolicy(Qt.ActionsContextMenu)
         self.actionClear = QAction("Clear", None)
         self.actionClear.triggered.connect(self.content.clear)
         self.content.addAction(self.actionClear)
@@ -63,7 +52,7 @@ class SearchResultsTool(DockTool):
 
     @staticmethod
     def defaultDockArea():
-        return QtCore.Qt.BottomDockWidgetArea
+        return Qt.BottomDockWidgetArea
 
     def onShow(self):
         super(SearchResultsTool, self).onShow()

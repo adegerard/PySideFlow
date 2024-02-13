@@ -1,6 +1,22 @@
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy.QtWidgets import *
+from PySide6.QtCore import (
+    Qt,
+    Signal,
+    QPointF,
+    QLineF,
+    QRect,
+    QRectF,
+    QMargins,
+)
+from PySide6.QtGui import (
+    QBrush,
+    QPainter,
+    QPen,
+)
+from PySide6.QtWidgets import (
+    QGraphicsView,
+    QGraphicsScene,
+    QGraphicsItem,
+)
 
 from PyFlow.UI.Canvas.UICommon import *
 from PyFlow.UI.Utils.stylesheet import editableStyleSheet
@@ -21,29 +37,29 @@ class CanvasBase(QGraphicsView):
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         # Antialias -- Change to Settings
-        self.setRenderHint(QtGui.QPainter.Antialiasing)
-        self.setRenderHint(QtGui.QPainter.TextAntialiasing)
+        self.setRenderHint(QPainter.Antialiasing)
+        self.setRenderHint(QPainter.TextAntialiasing)
         ##
         self.setAcceptDrops(True)
-        self.setAttribute(QtCore.Qt.WA_AlwaysShowToolTips)
+        self.setAttribute(Qt.WidgetAttribute.WA_AlwaysShowToolTips)
         self.setResizeAnchor(QGraphicsView.AnchorUnderMouse)
 
         self.setScene(self.createScene())
 
-        self.scene().setSceneRect(QtCore.QRectF(0, 0, 10, 10))
+        self.scene().setSceneRect(QRectF(0, 0, 10, 10))
 
-        self.mousePressPose = QtCore.QPointF(0, 0)
-        self.mousePos = QtCore.QPointF(0, 0)
-        self._lastMousePos = QtCore.QPointF(0, 0)
+        self.mousePressPose = QPointF(0, 0)
+        self.mousePos = QPointF(0, 0)
+        self._lastMousePos = QPointF(0, 0)
 
         self.centerOn(
-            QtCore.QPointF(self.sceneRect().width() / 2, self.sceneRect().height() / 2)
+            QPointF(self.sceneRect().width() / 2, self.sceneRect().height() / 2)
         )
 
     def createScene(self):
         scene = QGraphicsScene(self)
         scene.setItemIndexMethod(QGraphicsScene.NoIndex)
-        scene.setSceneRect(QtCore.QRectF(0, 0, 10, 10))
+        scene.setSceneRect(QRectF(0, 0, 10, 10))
         return scene
 
     def getItemsRect(self, cls=QGraphicsItem, bSelectedOnly=False, bVisibleOnly=True):
@@ -58,7 +74,7 @@ class CanvasBase(QGraphicsView):
                 rect = item.sceneBoundingRect().toRect()
                 rectangles.append(rect)
 
-        result = QtCore.QRect()
+        result = QRect()
 
         for r in rectangles:
             result |= r
@@ -66,7 +82,7 @@ class CanvasBase(QGraphicsView):
         return result
 
     def frameItems(self, items):
-        rect = QtCore.QRect()
+        rect = QRect()
         for i in items:
             rect |= i.sceneBoundingRect().toRect()
         self.frameRect(rect)
@@ -79,17 +95,17 @@ class CanvasBase(QGraphicsView):
     def manipulationMode(self, value):
         self._manipulationMode = value
         if value == CanvasManipulationMode.NONE:
-            self.viewport().setCursor(QtCore.Qt.ArrowCursor)
+            self.viewport().setCursor(Qt.ArrowCursor)
         elif value == CanvasManipulationMode.SELECT:
-            self.viewport().setCursor(QtCore.Qt.ArrowCursor)
+            self.viewport().setCursor(Qt.ArrowCursor)
         elif value == CanvasManipulationMode.PAN:
-            self.viewport().setCursor(QtCore.Qt.OpenHandCursor)
+            self.viewport().setCursor(Qt.OpenHandCursor)
         elif value == CanvasManipulationMode.MOVE:
-            self.viewport().setCursor(QtCore.Qt.ArrowCursor)
+            self.viewport().setCursor(Qt.ArrowCursor)
         elif value == CanvasManipulationMode.ZOOM:
-            self.viewport().setCursor(QtCore.Qt.SizeHorCursor)
+            self.viewport().setCursor(Qt.SizeHorCursor)
         elif value == CanvasManipulationMode.COPY:
-            self.viewport().setCursor(QtCore.Qt.ArrowCursor)
+            self.viewport().setCursor(Qt.ArrowCursor)
 
     def wheelEvent(self, event):
         zoomFactor = 1.0 + event.angleDelta().y() * self._mouseWheelZoomRate
@@ -117,7 +133,7 @@ class CanvasBase(QGraphicsView):
 
         # zoom to fit content
         ws = windowRect.size()
-        rect += QtCore.QMargins(40, 40, 40, 40)
+        rect += QMargins(40, 40, 40, 40)
         widthRef = ws.width()
         heightRef = ws.height()
         sx = widthRef / rect.width()
@@ -175,7 +191,7 @@ class CanvasBase(QGraphicsView):
         lod = self.getCanvasLodValueFromCurrentScale()
         self.boundingRect = rect
 
-        painter.fillRect(rect, QtGui.QBrush(editableStyleSheet().CanvasBgColor))
+        painter.fillRect(rect, QBrush(editableStyleSheet().CanvasBgColor))
 
         left = int(rect.left()) - (
             int(rect.left()) % editableStyleSheet().GridSizeFine[0]
@@ -188,18 +204,18 @@ class CanvasBase(QGraphicsView):
                 gridLines = []
                 y = float(top)
                 while y < float(rect.bottom()):
-                    gridLines.append(QtCore.QLineF(rect.left(), y, rect.right(), y))
+                    gridLines.append(QLineF(rect.left(), y, rect.right(), y))
                     y += editableStyleSheet().GridSizeFine[0]
-                painter.setPen(QtGui.QPen(editableStyleSheet().CanvasGridColor, 1))
+                painter.setPen(QPen(editableStyleSheet().CanvasGridColor, 1))
                 painter.drawLines(gridLines)
 
                 # Draw vertical fine lines
                 gridLines = []
                 x = float(left)
                 while x < float(rect.right()):
-                    gridLines.append(QtCore.QLineF(x, rect.top(), x, rect.bottom()))
+                    gridLines.append(QLineF(x, rect.top(), x, rect.bottom()))
                     x += editableStyleSheet().GridSizeFine[0]
-                painter.setPen(QtGui.QPen(editableStyleSheet().CanvasGridColor, 1))
+                painter.setPen(QPen(editableStyleSheet().CanvasGridColor, 1))
                 painter.drawLines(gridLines)
 
             # Draw thick grid
@@ -212,19 +228,19 @@ class CanvasBase(QGraphicsView):
 
             # Draw vertical thick lines
             gridLines = []
-            painter.setPen(QtGui.QPen(editableStyleSheet().CanvasGridColorDarker, 1.5))
+            painter.setPen(QPen(editableStyleSheet().CanvasGridColorDarker, 1.5))
             x = left
             while x < rect.right():
-                gridLines.append(QtCore.QLineF(x, rect.top(), x, rect.bottom()))
+                gridLines.append(QLineF(x, rect.top(), x, rect.bottom()))
                 x += editableStyleSheet().GridSizeHuge[0]
             painter.drawLines(gridLines)
 
             # Draw horizontal thick lines
             gridLines = []
-            painter.setPen(QtGui.QPen(editableStyleSheet().CanvasGridColorDarker, 1.5))
+            painter.setPen(QPen(editableStyleSheet().CanvasGridColorDarker, 1.5))
             y = top
             while y < rect.bottom():
-                gridLines.append(QtCore.QLineF(rect.left(), y, rect.right(), y))
+                gridLines.append(QLineF(rect.left(), y, rect.right(), y))
                 y += editableStyleSheet().GridSizeHuge[0]
             painter.drawLines(gridLines)
 
@@ -242,7 +258,7 @@ class CanvasBase(QGraphicsView):
                 inty = int(y)
                 if y > top + 30:
                     painter.setPen(
-                        QtGui.QPen(
+                        QPen(
                             editableStyleSheet().CanvasGridColorDarker.lighter(300)
                         )
                     )
@@ -254,7 +270,7 @@ class CanvasBase(QGraphicsView):
                 intx = int(x)
                 if x > left + 30:
                     painter.setPen(
-                        QtGui.QPen(
+                        QPen(
                             editableStyleSheet().CanvasGridColorDarker.lighter(300)
                         )
                     )

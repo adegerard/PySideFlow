@@ -1,18 +1,3 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 """Application class here
 """
 
@@ -22,13 +7,20 @@ import shutil
 from string import ascii_letters
 import random
 
-from qtpy import QtGui
-from qtpy import QtCore
-from qtpy.QtWidgets import *
+from PySide6 import QtGui
+from PySide6 import QtCore
+from PySide6.QtCore import (
+    Qt,
+    Signal
+)
+from PySide6.QtGui import (
+    QAction,
+)
+from PySide6.QtWidgets import *
 
 from PyFlow.Core.PathsRegistry import PathsRegistry
 from PyFlow.Core.version import *
-from PyFlow.Core.GraphManager import GraphManagerSingleton
+from PyFlow.Core import graph_manager
 from PyFlow.UI.Canvas.UICommon import *
 from PyFlow.UI.Widgets.BlueprintCanvas import BlueprintCanvasWidget
 from PyFlow.UI.Tool.Tool import ShelfTool, DockTool
@@ -53,6 +45,7 @@ from PyFlow.Input import InputManager
 from PyFlow.ConfigManager import ConfigManager
 
 import PyFlow.UI.resources
+from PyFlow.UI import editor_history
 
 EDITOR_TARGET_FPS = 30
 
@@ -84,24 +77,24 @@ class PyFlow(QMainWindow):
 
     appInstance = None
 
-    newFileExecuted = QtCore.Signal(bool)
-    fileBeenLoaded = QtCore.Signal()
+    newFileExecuted = Signal(bool)
+    fileBeenLoaded = Signal()
 
     def __init__(self, parent=None):
-        super(PyFlow, self).__init__(parent=parent)
+        super().__init__(parent=parent)
         self._modified = False
-        self.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.setFocusPolicy(Qt.StrongFocus)
         self.currentSoftware = ""
-        self.edHistory = EditorHistory(self)
-        self.edHistory.statePushed.connect(self.historyStatePushed)
+        editor_history.set_parent(self)
+        editor_history.statePushed.connect(self.historyStatePushed)
+
         self.setWindowTitle(winTitle())
         self.undoStack = QtGui.QUndoStack(self)
         self.setContentsMargins(1, 1, 1, 1)
-        self.graphManager = GraphManagerSingleton()
-        self.canvasWidget = BlueprintCanvasWidget(self.graphManager.get(), self)
+        self.canvasWidget = BlueprintCanvasWidget(self)
         self.canvasWidget.setObjectName("canvasWidget")
         self.setCentralWidget(self.canvasWidget)
-        self.setTabPosition(QtCore.Qt.AllDockWidgetAreas, QTabWidget.North)
+        self.setTabPosition(Qt.AllDockWidgetAreas, QTabWidget.North)
         self.setDockOptions(QMainWindow.AnimatedDocks | QMainWindow.AllowNestedDocks)
 
         self.menuBar = QMenuBar(self)
@@ -110,7 +103,7 @@ class PyFlow(QMainWindow):
         self.setMenuBar(self.menuBar)
         self.toolBar = QToolBar(self)
         self.toolBar.setObjectName("toolBar")
-        self.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
+        self.addToolBar(Qt.TopToolBarArea, self.toolBar)
 
         self.setWindowIcon(QtGui.QIcon(":/LogoBpApp.png"))
         self._tools = set()
@@ -291,12 +284,12 @@ class PyFlow(QMainWindow):
             elif shouldSave == QMessageBox.Cancel:
                 return
 
-            EditorHistory().clear()
+            editor_history.clear()
             historyTools = self.getRegisteredTools(classNameFilters=["HistoryTool"])
             for historyTools in historyTools:
                 historyTools.onClear()
             self.newFile()
-            EditorHistory().saveState("New file")
+            editor_history.saveState("New file")
             self.currentFileName = None
             self.modified = False
             self.updateLabel()
@@ -336,16 +329,16 @@ class PyFlow(QMainWindow):
             return
 
         if clearHistory:
-            EditorHistory().clear()
+            editor_history.clear()
             historyTools = self.getRegisteredTools(classNameFilters=["HistoryTool"])
             for historyTools in historyTools:
                 historyTools.onClear()
 
         self.newFile(keepRoot=False)
         # load raw data
-        self.graphManager.get().deserialize(data)
+        graph_manager.deserialize(data)
         self.fileBeenLoaded.emit()
-        self.graphManager.get().selectGraphByName(data["activeGraph"])
+        graph_manager.selectGraphByName(data["activeGraph"])
         self.updateLabel()
         PathsRegistry().rebuild()
 
@@ -363,7 +356,7 @@ class PyFlow(QMainWindow):
             data = json.load(f)
             self.loadFromData(data, clearHistory=True)
             self.currentFileName = filePath
-            EditorHistory().saveState(
+            editor_history.saveState(
                 "Open {}".format(os.path.basename(self.currentFileName))
             )
 
@@ -410,7 +403,7 @@ class PyFlow(QMainWindow):
 
         if not self.currentFileName == "":
             with open(self.currentFileName, "w") as f:
-                saveData = self.graphManager.get().serialize()
+                saveData = graph_manager.serialize()
                 json.dump(saveData, f, indent=4)
             print(str("// saved: '{0}'".format(self.currentFileName)))
             self.modified = False
@@ -420,27 +413,27 @@ class PyFlow(QMainWindow):
     def _clickNewFile(self):
         shouldSave = self.shouldSave()
         if shouldSave == QMessageBox.Save:
-            
+
             self.save()
         elif shouldSave == QMessageBox.Cancel:
             return
 
-        EditorHistory().clear()
+        editor_history.clear()
         historyTools = self.getRegisteredTools(classNameFilters=["HistoryTool"])
         for historyTools in historyTools:
             historyTools.onClear()
         self.newFile()
-        EditorHistory().saveState("New file")
+        editor_history.saveState("New file")
         self.currentFileName = None
         self.modified = False
         self.updateLabel()
-        
+
     def newFile(self, keepRoot=True):
         self.tick_timer.stop()
         self.tick_timer.timeout.disconnect()
 
         # broadcast
-        self.graphManager.get().clear(keepRoot=keepRoot)
+        graph_manager.clear(keepRoot=keepRoot)
         self.newFileExecuted.emit(keepRoot)
         self.onRequestClearProperties()
 
@@ -456,7 +449,7 @@ class PyFlow(QMainWindow):
 
     def mainLoop(self):
         asyncio.get_event_loop().run_until_complete(self._tick_asyncio())
-        
+
         deltaTime = currentProcessorTime() - self._lastClock
         ds = deltaTime * 1000.0
         if ds > 0:
@@ -465,13 +458,13 @@ class PyFlow(QMainWindow):
         # Tick all graphs
         # each graph will tick owning raw nodes
         # each raw node will tick its ui wrapper if it exists
-        self.graphManager.get().Tick(deltaTime)
+        graph_manager.Tick(deltaTime)
 
         # Tick canvas. Update ui only stuff such animation etc.
         self.canvasWidget.Tick(deltaTime)
 
         self._lastClock = currentProcessorTime()
-        
+
     async def _tick_asyncio(self):
         await asyncio.sleep(0.00001)
 
@@ -565,7 +558,7 @@ class PyFlow(QMainWindow):
 
         self.tick_timer.stop()
         self.tick_timer.timeout.disconnect()
-        EditorHistory().shutdown()
+        # editor_history.shutdown()
 
         self.canvasWidget.shoutDown()
         # save editor config
@@ -717,7 +710,7 @@ class PyFlow(QMainWindow):
                     settings.endGroup()
 
         PyFlow.appInstance = instance
-        EditorHistory().saveState("New file")
+        editor_history.saveState("New file")
 
         for name, package in GET_PACKAGES().items():
             prefsWidgets = package.PrefsWidgets()

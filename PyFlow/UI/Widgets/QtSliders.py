@@ -1,22 +1,10 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 from copy import copy
 import sys
-from qtpy import QtGui, QtCore, QtWidgets
-
+from PySide6 import QtGui, QtCore, QtWidgets
+from PySide6.QtCore import (
+    Qt,
+    Signal,
+)
 from PyFlow.UI.Canvas.UICommon import SessionDescriptor
 from PyFlow.UI.Utils.stylesheet import editableStyleSheet, Colors
 from PyFlow.Core.Common import *
@@ -55,7 +43,7 @@ class inputDragger(QtWidgets.QWidget):
         font = self.label.font()
         font.setPointSize(7)
         self.label.setFont(font)
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setAlignment(Qt.AlignCenter)
         self.frame.layout().addWidget(self.label)
         self.layout().addWidget(self.frame)
         self.setStyleSheet(
@@ -67,7 +55,7 @@ class inputDragger(QtWidgets.QWidget):
         self.setMaximumHeight(self.size)
         self.setMaximumWidth(self.size)
         self._factor = factor
-        self.setAttribute(QtCore.Qt.WA_Hover)
+        self.setAttribute(Qt.WA_Hover)
         self.installEventFilter(self)
         self.label.installEventFilter(self)
 
@@ -100,7 +88,7 @@ class draggers(QtWidgets.QWidget):
     Custom Widget that holds a bunch of :obj:`inputDragger` to drag values when midClick over field type input widget, Right Drag increments value, Left Drag decreases Value
     """
 
-    increment = QtCore.Signal(object)
+    increment = Signal(object)
 
     def __init__(self, parent=None, isFloat=True, draggerSteps=FLOAT_SLIDER_DRAG_STEPS):
         super(draggers, self).__init__(parent)
@@ -108,7 +96,7 @@ class draggers(QtWidgets.QWidget):
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setSpacing(0)
         self.layout().setContentsMargins(0, 0, 0, 0)
-        self.setWindowFlags(QtCore.Qt.Popup)
+        self.setWindowFlags(Qt.Popup)
         self.activeDrag = None
         self.lastDeltaX = 0
         self.drags = []
@@ -137,16 +125,16 @@ class draggers(QtWidgets.QWidget):
                 if self._changeDirection != 0:
                     v = self._changeDirection * self.activeDrag._factor
 
-                    if modifiers == QtCore.Qt.NoModifier and deltaX % 4 == 0:
+                    if modifiers == Qt.NoModifier and deltaX % 4 == 0:
                         self.increment.emit(v)
                     if (
                         modifiers
-                        in [QtCore.Qt.ShiftModifier, QtCore.Qt.ControlModifier]
+                        in [Qt.ShiftModifier, Qt.ControlModifier]
                         and deltaX % 8 == 0
                     ):
                         self.increment.emit(v)
                     if (
-                        modifiers == QtCore.Qt.ShiftModifier | QtCore.Qt.ControlModifier
+                        modifiers == Qt.ShiftModifier | Qt.ControlModifier
                         and deltaX % 32 == 0
                     ):
                         self.increment.emit(v)
@@ -175,9 +163,9 @@ class slider(QtWidgets.QSlider):
         QtWidgets.QSlider
     """
 
-    editingFinished = QtCore.Signal()
-    valueIncremented = QtCore.Signal(object)
-    floatValueChanged = QtCore.Signal(object)
+    editingFinished = Signal()
+    valueIncremented = Signal(object)
+    floatValueChanged = Signal(object)
 
     def __init__(
         self,
@@ -189,25 +177,25 @@ class slider(QtWidgets.QSlider):
     ):
         super(slider, self).__init__(parent, **kwargs)
         self.sliderRange = sliderRange
-        self.setFocusPolicy(QtCore.Qt.StrongFocus)
-        self.setOrientation(QtCore.Qt.Horizontal)
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setOrientation(Qt.Horizontal)
         self.draggerSteps = draggerSteps
         self.isFloat = False
         self.deltaValue = 0
         self.startDragpos = QtCore.QPointF()
         self.realStartDragpos = QtCore.QPointF()
-        self.LeftButton = QtCore.Qt.LeftButton
-        self.MidButton = QtCore.Qt.MidButton
+        self.LeftButton = Qt.MouseButton.LeftButton
+        self.MidButton = Qt.MouseButton.MiddleButton
         self.draggers = None
         if SessionDescriptor().software == "maya":
-            self.LeftButton = QtCore.Qt.MidButton
-            self.MidButton = QtCore.Qt.LeftButton
+            self.LeftButton = Qt.MouseButton.MiddleButton
+            self.MidButton = Qt.LeftButton
         self.setRange(self.sliderRange[0], self.sliderRange[1])
 
     def mousePressEvent(self, event):
         self.prevValue = self.value()
         self.startDragpos = event.pos()
-        if event.button() == QtCore.Qt.MidButton:
+        if event.button() == Qt.MouseButton.MiddleButton:
             if self.draggers is None:
                 self.draggers = draggers(
                     self, self.isFloat, draggerSteps=self.draggerSteps
@@ -235,20 +223,20 @@ class slider(QtWidgets.QSlider):
                 )
 
         elif event.button() == self.LeftButton and event.modifiers() not in [
-            QtCore.Qt.ControlModifier,
-            QtCore.Qt.ShiftModifier,
-            QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier,
+            Qt.ControlModifier,
+            Qt.ShiftModifier,
+            Qt.ControlModifier | Qt.ShiftModifier,
         ]:
-            butts = QtCore.Qt.MouseButtons(self.MidButton)
+            butts = Qt.MouseButtons(self.MidButton)
             nevent = QtGui.QMouseEvent(
                 event.type(), event.pos(), self.MidButton, butts, event.modifiers()
             )
             super(slider, self).mousePressEvent(nevent)
 
         elif event.modifiers() in [
-            QtCore.Qt.ControlModifier,
-            QtCore.Qt.ShiftModifier,
-            QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier,
+            Qt.ControlModifier,
+            Qt.ShiftModifier,
+            Qt.ControlModifier | Qt.ShiftModifier,
         ]:
             st_slider = QtWidgets.QStyleOptionSlider()
             st_slider.initFrom(self)
@@ -259,7 +247,7 @@ class slider(QtWidgets.QSlider):
             xloc = QtWidgets.QStyle.sliderPositionFromValue(
                 self.minimum(), self.maximum(), super(slider, self).value(), available
             )
-            butts = QtCore.Qt.MouseButtons(self.MidButton)
+            butts = Qt.MouseButtons(self.MidButton)
             newPos = QtCore.QPointF()
             newPos.setX(xloc)
             nevent = QtGui.QMouseEvent(
@@ -278,18 +266,18 @@ class slider(QtWidgets.QSlider):
         deltaY = event.pos().y() - self.realStartDragpos.y()
         newPos = QtCore.QPointF()
         if event.modifiers() in [
-            QtCore.Qt.ControlModifier,
-            QtCore.Qt.ShiftModifier,
-            QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier,
+            Qt.ControlModifier,
+            Qt.ShiftModifier,
+            Qt.ControlModifier | Qt.ShiftModifier,
         ]:
-            if event.modifiers() == QtCore.Qt.ControlModifier:
+            if event.modifiers() == Qt.ControlModifier:
                 newPos.setX(self.startDragpos.x() + deltaX / 2)
                 newPos.setY(self.startDragpos.y() + deltaY / 2)
-            elif event.modifiers() == QtCore.Qt.ShiftModifier:
+            elif event.modifiers() == Qt.ShiftModifier:
                 newPos.setX(self.startDragpos.x() + deltaX / 4)
                 newPos.setY(self.startDragpos.y() + deltaY / 4)
             elif (
-                event.modifiers() == QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier
+                event.modifiers() == Qt.ControlModifier | Qt.ShiftModifier
             ):
                 newPos.setX(self.startDragpos.x() + deltaX / 8)
                 newPos.setY(self.startDragpos.y() + deltaY / 8)
@@ -316,7 +304,7 @@ class slider(QtWidgets.QSlider):
 
 
 class DoubleSlider(slider):
-    doubleValueChanged = QtCore.Signal(float)
+    doubleValueChanged = Signal(float)
 
     def __init__(
         self,
@@ -331,7 +319,7 @@ class DoubleSlider(slider):
         )
         self.isFloat = True
         self._dencity = abs(dencity)
-        self.setOrientation(QtCore.Qt.Horizontal)
+        self.setOrientation(Qt.Horizontal)
 
         # set internal int slider range (dencity)
         self.setMinimum(0)
@@ -405,7 +393,7 @@ class valueBox(QtWidgets.QDoubleSpinBox):
         QtWidgets.QDoubleSpinBox
     """
 
-    valueIncremented = QtCore.Signal(object)
+    valueIncremented = Signal(object)
 
     def __init__(
         self,
@@ -445,7 +433,7 @@ class valueBox(QtWidgets.QDoubleSpinBox):
         )
         self.lineEdit().installEventFilter(self)
         self.installEventFilter(self)
-        self.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.setFocusPolicy(Qt.StrongFocus)
         self.draggers = None
         self.setRange(FLOAT_RANGE_MIN, FLOAT_RANGE_MAX)
 
@@ -455,7 +443,7 @@ class valueBox(QtWidgets.QDoubleSpinBox):
         p.begin(self)
         p.setPen(Colors.DarkGray)
         p.setFont(self.labelFont)
-        p.drawText(self.rect(), QtCore.Qt.AlignCenter, self.labelText)
+        p.drawText(self.rect(), Qt.AlignCenter, self.labelText)
         p.end()
 
     def wheelEvent(self, event):
@@ -471,7 +459,7 @@ class valueBox(QtWidgets.QDoubleSpinBox):
 
     def eventFilter(self, object, event):
         if event.type() == QtCore.QEvent.MouseButtonPress:
-            if event.button() == QtCore.Qt.MiddleButton:
+            if event.button() == Qt.MiddleButton:
                 if self.draggers is None:
                     self.draggers = draggers(
                         self, self.isFloat, draggerSteps=self.draggerSteps
@@ -512,7 +500,7 @@ class pyf_Slider(QtWidgets.QWidget):
         :valueChanged: Signal emitted when slider or valueBox value changes, int/float
     """
 
-    valueChanged = QtCore.Signal(object)
+    valueChanged = Signal(object)
 
     def __init__(
         self,
@@ -904,7 +892,7 @@ class pyf_ColorSlider(QtWidgets.QWidget):
         :valueChanged: Signal emitted when any of the sliders/valueBoxes changes
     """
 
-    valueChanged = QtCore.Signal(list)
+    valueChanged = Signal(list)
 
     def __init__(
         self, parent=None, startColor=(0, 0, 0), type="float", alpha=False, h=50, *args
@@ -1121,7 +1109,7 @@ class pyf_timeline(QtWidgets.QSlider):
         self.setRange(0, 30)
         self.origMax = self.maximum()
         self.oriMin = self.minimum()
-        self.setOrientation(QtCore.Qt.Horizontal)
+        self.setOrientation(Qt.Horizontal)
         self.setStyleSheet(editableStyleSheet().getSliderStyleSheet("timeStyleSheet"))
         self.setMouseTracking(True)
         self.setPageStep(1)
@@ -1164,10 +1152,10 @@ class pyf_timeline(QtWidgets.QSlider):
         fStep = float(w) / nb
         step = max(1, int(round(fStep)))
 
-        pen = QtGui.QPen(QtGui.QColor(200, 200, 200), 1, QtCore.Qt.SolidLine)
+        pen = QtGui.QPen(QtGui.QColor(200, 200, 200), 1, Qt.SolidLine)
 
         qp.setPen(pen)
-        qp.setBrush(QtCore.Qt.NoBrush)
+        qp.setBrush(Qt.NoBrush)
 
         pxNb = int(round((nb + 1) * step))
         r = range(self.minimum(), self.maximum() + 1, 1)
@@ -1183,13 +1171,13 @@ class pyf_timeline(QtWidgets.QSlider):
                 qp.setBrush(QtGui.QColor(0, 255, 0))
                 qp.drawRect(pos - (fStep / 2), half + 5, fStep, 1.5)
                 qp.setPen(pen)
-                qp.setBrush(QtCore.Qt.NoBrush)
+                qp.setBrush(Qt.NoBrush)
             elif r[e] in self.missingFrames:
                 qp.setPen(QtGui.QColor(255, 0, 0))
                 qp.setBrush(QtGui.QColor(255, 0, 0))
                 qp.drawRect(pos - (fStep / 2), half + 5, fStep, 1.5)
                 qp.setPen(pen)
-                qp.setBrush(QtCore.Qt.NoBrush)
+                qp.setBrush(Qt.NoBrush)
             if (r[e] % 5) == 0:
                 s = 4
                 text = r[e]
@@ -1221,31 +1209,31 @@ class pyf_timeline(QtWidgets.QSlider):
                     fw *= -1
                 color2 = QtGui.QColor(editableStyleSheet().MainColor)
                 color2.setAlpha(100)
-                pen2 = QtGui.QPen(color2, 2, QtCore.Qt.SolidLine)
+                pen2 = QtGui.QPen(color2, 2, Qt.SolidLine)
                 qp.setPen(pen2)
                 qp.drawLine(pos, 0, pos, h)
                 qp.drawText(pos + fw, 0 + fh, str(val))
         qp.setPen(pen)
 
     def mousePressEvent(self, event):
-        if event.modifiers() == QtCore.Qt.AltModifier:
+        if event.modifiers() == Qt.AltModifier:
             self.PressPos = event.globalPos()
             self.MovePos = event.globalPos()
         if (
-            event.button() == QtCore.Qt.LeftButton
-            and event.modifiers() != QtCore.Qt.AltModifier
+            event.button() == Qt.LeftButton
+            and event.modifiers() != Qt.AltModifier
         ):
-            butts = QtCore.Qt.MouseButtons(QtCore.Qt.MidButton)
+            butts = Qt.MouseButtons(Qt.MouseButton.MiddleButton)
             nevent = QtGui.QMouseEvent(
                 event.type(),
                 QtCore.QPointF(event.pos()),
                 QtCore.QPointF(event.globalPos()),
-                QtCore.Qt.MidButton,
+                Qt.MouseButton.MiddleButton,
                 butts,
                 event.modifiers(),
             )
             super(pyf_timeline, self).mousePressEvent(nevent)
-        elif event.modifiers() != QtCore.Qt.AltModifier:
+        elif event.modifiers() != Qt.AltModifier:
             super(pyf_timeline, self).mousePressEvent(event)
 
     def wheelEvent(self, event):
@@ -1267,8 +1255,8 @@ class pyf_timeline(QtWidgets.QSlider):
         return super(pyf_timeline, self).eventFilter(widget, event)
 
     def mouseMoveEvent(self, event):
-        if event.modifiers() == QtCore.Qt.AltModifier:
-            if event.buttons() in [QtCore.Qt.MidButton, QtCore.Qt.LeftButton]:
+        if event.modifiers() == Qt.AltModifier:
+            if event.buttons() in [Qt.MouseButton.MiddleButton, Qt.LeftButton]:
                 globalPos = event.globalPos()
                 diff = globalPos - self.MovePos
                 a = self.width() / (self.maximum() - self.minimum())
@@ -1373,7 +1361,7 @@ class uiTick(QtWidgets.QGraphicsWidget):
     def paint(self, painter, option, widget):
         bgRect = self.boundingRect()
         painter.setBrush(QtGui.QColor(255, 255, 255, 150))
-        pen = QtGui.QPen(QtCore.Qt.black, 1.5)
+        pen = QtGui.QPen(Qt.black, 1.5)
         if self.isSelected():
             pen.setColor(editableStyleSheet().MainColor)
         elif self.hovered:
@@ -1397,12 +1385,12 @@ class pyf_RampSpline(QtWidgets.QGraphicsView):
         :tickRemoved: Signal emitted when a UiTick element deleted
     """
 
-    tickClicked = QtCore.Signal(object)
-    tickAdded = QtCore.Signal(object)
-    tickChanged = QtCore.Signal(object)
-    tickMoved = QtCore.Signal(object)
-    tickRemoved = QtCore.Signal()
-    valueClicked = QtCore.Signal(object, object)
+    tickClicked = Signal(object)
+    tickAdded = Signal(object)
+    tickChanged = Signal(object)
+    tickMoved = Signal(object)
+    tickRemoved = Signal()
+    valueClicked = Signal(object, object)
 
     def __init__(self, raw_ramp, parent=None, bezier=False):
         """
@@ -1421,8 +1409,8 @@ class pyf_RampSpline(QtWidgets.QGraphicsView):
         self.setScene(self._scene)
         self.setTransformationAnchor(QtWidgets.QGraphicsView.AnchorViewCenter)
         self.setResizeAnchor(QtWidgets.QGraphicsView.AnchorViewCenter)
-        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setRenderHint(QtGui.QPainter.Antialiasing)
         self.setMaximumHeight(60)
         self.setMinimumHeight(60)
@@ -1596,7 +1584,7 @@ class pyf_RampSpline(QtWidgets.QGraphicsView):
             0, 0, self.frameSize().width(), self.frameSize().height()
         )
         self.fitInView(
-            0, 0, self.scene().sceneRect().width(), 60, QtCore.Qt.IgnoreAspectRatio
+            0, 0, self.scene().sceneRect().width(), 60, Qt.IgnoreAspectRatio
         )
         for item in self.items():
             self.updateItemPos(item)
@@ -1613,7 +1601,7 @@ class pyf_RampSpline(QtWidgets.QGraphicsView):
         self.pressed_item = self.itemAt(event.pos())
         self.mousePressPose = event.pos()
         self._lastMousePos = event.pos()
-        if event.button() == QtCore.Qt.RightButton:
+        if event.button() == Qt.RightButton:
             if self.pressed_item:
                 self._scene.removeItem(self.pressed_item)
                 self._rawRamp.removeItem(self.pressed_item._rawTick)
@@ -1622,7 +1610,7 @@ class pyf_RampSpline(QtWidgets.QGraphicsView):
                 self.pressed_item = None
                 self.computeDisplayPoints()
                 self.tickRemoved.emit()
-        elif event.button() == QtCore.Qt.LeftButton and not self.pressed_item:
+        elif event.button() == Qt.LeftButton and not self.pressed_item:
             raw_item = self._rawRamp.addItem(0, 0)
             item = uiTick(raw_item)
             item._width = item._height = 6
@@ -1737,7 +1725,7 @@ class pyf_RampSpline(QtWidgets.QGraphicsView):
         items = self.sortedItems()
         if len(items):
             painter.setBrush(QtGui.QColor(100, 100, 100))
-            painter.drawPolygon(self.displayPoints, QtCore.Qt.WindingFill)
+            painter.drawPolygon(self.displayPoints, Qt.WindingFill)
         # else:
         #     b = editableStyleSheet().InputFieldColor
 
@@ -1758,7 +1746,7 @@ class pyf_RampColor(pyf_RampSpline):
         :obj: `pyf_RampSpline`
     """
 
-    colorClicked = QtCore.Signal(list)
+    colorClicked = Signal(list)
 
     def __init__(self, raw_ramp, parent=None, bezier=True):
         super(pyf_RampColor, self).__init__(raw_ramp, parent, bezier)
@@ -1823,7 +1811,7 @@ class pyf_RampColor(pyf_RampSpline):
             0, 0, self.frameSize().width(), self.frameSize().height()
         )
         self.fitInView(
-            0, 0, self.scene().sceneRect().width(), 15, QtCore.Qt.IgnoreAspectRatio
+            0, 0, self.scene().sceneRect().width(), 15, Qt.IgnoreAspectRatio
         )
         for item in self.items():
             self.updateItemPos(item)
@@ -1833,7 +1821,7 @@ class pyf_RampColor(pyf_RampSpline):
         self.pressed_item = self.itemAt(event.pos())
         self.mousePressPose = event.pos()
         self._lastMousePos = event.pos()
-        if event.button() == QtCore.Qt.RightButton:
+        if event.button() == Qt.RightButton:
             if self.pressed_item:
                 self._scene.removeItem(self.pressed_item)
                 self._rawRamp.removeItem(self.pressed_item._rawTick)

@@ -1,20 +1,8 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
-from blinker import Signal
-
+from PySide6.QtCore import (
+    Qt,
+    Signal,
+    QObject,
+)
 from PyFlow.Core.GraphBase import GraphBase
 from PyFlow.Core.Common import *
 from PyFlow.Core import version
@@ -22,7 +10,8 @@ from PyFlow.Core import version
 ROOT_GRAPH_NAME = "root"
 
 
-class GraphManager(object):
+class GraphManager(QObject):
+    graphChanged = Signal(object)
     """Data structure that holds graph tree
 
     This class switches active graph. Can insert or remove graphs to tree,
@@ -32,8 +21,8 @@ class GraphManager(object):
 
     def __init__(self):
         super(GraphManager, self).__init__()
+        print("initialize a graph manager")
         self.terminationRequested = False  #: used by cli only
-        self.graphChanged = Signal(object)
         self._graphs = {}
         self._activeGraph = None
         self._activeGraph = GraphBase(ROOT_GRAPH_NAME, self)
@@ -267,7 +256,7 @@ class GraphManager(object):
             if name != self.activeGraph().name:
                 newGraph = graphs[name]
                 self._activeGraph = newGraph
-                self.graphChanged.send(self.activeGraph())
+                self.graphChanged.emit(self.activeGraph())
 
     def selectGraph(self, graph):
         """Sets supplied graph as active and fires event
@@ -279,7 +268,7 @@ class GraphManager(object):
             if newGraph.name == graph.name:
                 if newGraph.name != self.activeGraph().name:
                     self._activeGraph = newGraph
-                    self.graphChanged.send(self.activeGraph())
+                    self.graphChanged.emit(self.activeGraph())
                     break
 
     def getAllGraphs(self):
@@ -407,19 +396,3 @@ class GraphManager(object):
             [g.name for g in self._graphs.values()],
         )
         root.plot()
-
-
-@SingletonDecorator
-class GraphManagerSingleton(object):
-    """Singleton class that holds graph manager instance inside. Used by app as main graph manager
-    """
-
-    def __init__(self):
-        self.man = GraphManager()
-
-    def get(self):
-        """Returns graph manager instance
-
-        :rtype: :class:`~PyFlow.Core.GraphManager.GraphManager`
-        """
-        return self.man

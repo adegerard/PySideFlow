@@ -1,18 +1,3 @@
-## Copyright 2023 David Lario
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 import os
 import shutil
 #import subprocess
@@ -20,30 +5,32 @@ import uuid
 import inspect
 import importlib
 
-from qtpy.QtCore import QCoreApplication
-from qtpy.QtGui import QIcon, QPixmap
+from PySide6.QtCore import (
+    QCoreApplication,
+    Qt,
+    Signal,
+)
+from PySide6.QtGui import QIcon, QPixmap
 from sqlalchemy.sql.coercions import cls
 
 from PyFlow import Packages
 
-from qtpy import QtGui
-from qtpy import QtCore
-from qtpy.QtWidgets import *
+from PySide6 import QtGui
+from PySide6 import QtCore
+from PySide6.QtWidgets import *
 
-from qtpy.uic import loadUiType, loadUi
-from qtpy import QtUiTools
-from blinker import Signal
+
+from PySide6 import QtUiTools
 
 path = os.path.dirname(os.path.abspath(__file__))
 packageRoot = Packages.__path__[0]
 
 uiFile = os.path.join(path, 'PackageBuilder.ui')
-#WindowTemplate, TemplateBaseClass = loadUiType(uiFile)
+
 RESOURCES_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "UI/resources/")
 
-from qtpy.QtCore import QItemSelectionModel #Because Pyside hijacked from pyqt
-from qtpy.QtCore import QSortFilterProxyModel, QRegularExpression, QModelIndex
-from qtpy.QtGui import QStandardItemModel, QStandardItem
+from PySide6.QtCore import QRegularExpression
+from PySide6.QtGui import QStandardItemModel, QStandardItem
 
 class TableComboModel(QComboBox):
     #Should combine with to customWidgets
@@ -98,7 +85,7 @@ class TableComboModel(QComboBox):
                 self.setCurrentIndex(row)
                 break
 
-    def data(self, index, role=QtCore.Qt.DisplayRole):
+    def data(self, index, role=Qt.DisplayRole):
         #print('ComboModel data')
         if not index.isValid() or ( role != QtGui.Qt.DisplayRole and role != QtGui.Qt.EditRole ):
             print('ComboModel return invalid QVariant')
@@ -274,15 +261,15 @@ class PackageBuilder(QMdiSubWindow):
             if directories[1] != "_":
                 parent = QTreeWidgetItem(self.ui.tvPackageItems)
                 parent.setText(0, directories)
-                #parent.setFlags(parent.flags() | QtCore.Qt.ItemIsTristate | QtCore.Qt.ItemIsUserCheckable)
+                #parent.setFlags(parent.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
                 filepath = os.path.join(packagepath, directories)
                 for file in os.listdir(filepath):
                     if file[1] != "_" and file[-3:]==".py":
                         child = QTreeWidgetItem(parent)
                         #child.clicked.connect(self.on_tvPackageItems_clicked)
-                        #child.setFlags(child.flags() | QtCore.Qt.ItemIsUserCheckable)
+                        #child.setFlags(child.flags() | Qt.ItemIsUserCheckable)
                         child.setText(0, file[:-3])
-                        #child.setCheckState(0, QtCore.Qt.Unchecked)
+                        #child.setCheckState(0, Qt.Unchecked)
                         filefullpath = os.path.join(filepath, file)
 
                         try:
@@ -294,20 +281,20 @@ class PackageBuilder(QMdiSubWindow):
                                             classnamestart = lineitem.find(" ")
                                             classnameend  = lineitem.find("(")
                                             #child2 = QTreeWidgetItem(child)
-                                            #child2.setFlags(child2.flags() | QtCore.Qt.ItemIsUserCheckable)
+                                            #child2.setFlags(child2.flags() | Qt.ItemIsUserCheckable)
                                             #child2.setText(0, lineitem[classnamestart+1:classnameend])
-                                            #child2.setCheckState(0, QtCore.Qt.Unchecked)
+                                            #child2.setCheckState(0, Qt.Unchecked)
                                         if lineitem.find("def ") != -1:
                                             if lineitem[8] != "_":
                                                 classnamestart = 7
                                                 classnameend = lineitem.find("(")
                                                 child2 = QTreeWidgetItem(child)
-                                                #child2.setFlags(child2.flags() | QtCore.Qt.ItemIsUserCheckable)
+                                                #child2.setFlags(child2.flags() | Qt.ItemIsUserCheckable)
                                                 classname = lineitem[classnamestart+1:classnameend]
                                                 if file.find(lineitem[classnamestart+1:classnameend]) == -1:
                                                     functionname = lineitem[classnamestart+1:classnameend]
                                                     child2.setText(0, functionname)
-                                                    #child2.setCheckState(0, QtCore.Qt.Unchecked)
+                                                    #child2.setCheckState(0, Qt.Unchecked)
                         except:
                             pass
 
@@ -1026,9 +1013,9 @@ class PackageBuilder(QMdiSubWindow):
                     if "DefaultValue" in self.functiondict[defname]["PinDefs"]["Inputs"][pindata]:
                         inputpinlistmodel.setItem(row, 2, QtGui.QStandardItem(self.functiondict[defname]["PinDefs"]["Inputs"][pindata]["DefaultValue"]))
 
-                inputpinlistmodel.setHeaderData(0, QtCore.Qt.Horizontal, 'Name', role=QtCore.Qt.DisplayRole)
-                inputpinlistmodel.setHeaderData(1, QtCore.Qt.Horizontal, 'Data Type', role=QtCore.Qt.DisplayRole)
-                inputpinlistmodel.setHeaderData(2, QtCore.Qt.Horizontal, 'Default Value', role=QtCore.Qt.DisplayRole)
+                inputpinlistmodel.setHeaderData(0, Qt.Horizontal, 'Name', role=Qt.DisplayRole)
+                inputpinlistmodel.setHeaderData(1, Qt.Horizontal, 'Data Type', role=Qt.DisplayRole)
+                inputpinlistmodel.setHeaderData(2, Qt.Horizontal, 'Default Value', role=Qt.DisplayRole)
 
             outputPinList = []
             if "Outputs" in self.functiondict[defname]["PinDefs"]:
@@ -1049,9 +1036,9 @@ class PackageBuilder(QMdiSubWindow):
                     if "DefaultValue" in self.functiondict[defname]["PinDefs"]["Outputs"][pindata]:
                         outputpinlistmodel.setItem(row, 2, QtGui.QStandardItem(self.functiondict[defname]["PinDefs"]["Outputs"][pindata]["DefaultValue"]))
 
-                outputpinlistmodel.setHeaderData(0, QtCore.Qt.Horizontal, 'Name', role=QtCore.Qt.DisplayRole)
-                outputpinlistmodel.setHeaderData(1, QtCore.Qt.Horizontal, 'Data Type', role=QtCore.Qt.DisplayRole)
-                outputpinlistmodel.setHeaderData(2, QtCore.Qt.Horizontal, 'Default Value', role=QtCore.Qt.DisplayRole)
+                outputpinlistmodel.setHeaderData(0, Qt.Horizontal, 'Name', role=Qt.DisplayRole)
+                outputpinlistmodel.setHeaderData(1, Qt.Horizontal, 'Data Type', role=Qt.DisplayRole)
+                outputpinlistmodel.setHeaderData(2, Qt.Horizontal, 'Default Value', role=Qt.DisplayRole)
 
             self.ui.tblFInputPins.setModel(inputpinlistmodel)
             self.ui.tblFOutputPins.setModel(outputpinlistmodel)
@@ -1604,7 +1591,7 @@ class PackageBuilder(QMdiSubWindow):
 
             f.write("from PyFlow.UI.Tool.Tool import ShelfTool\n")
             f.write("from PyFlow.Core.Common import Direction\n")
-            f.write("from qtpy import QtGui\n")
+            f.write("from PySide6 import QtGui\n")
             f.write("from PyFlow.Packages.%s.Tools import RESOURCES_DIR\n\n" % (selectedpackage))
 
             f.write(classline)
@@ -1825,7 +1812,7 @@ class PackageBuilder(QMdiSubWindow):
         '''print(index)
         print("Click", self.ui.tblFInputPins.model().index(index.row(), 0).data())
         print("Row %d and Column %d was clicked" % (index.row(), index.column()))
-        print(self.ui.tblFInputPins.model().data(index, QtCore.Qt.UserRole))'''
+        print(self.ui.tblFInputPins.model().data(index, Qt.UserRole))'''
         #self.ReferenceNumber_id = self.ui.tblFInputPins.model().index(index.row(), 0).data()
 
         self.selectedPinDir = "Inputs"
@@ -1838,7 +1825,7 @@ class PackageBuilder(QMdiSubWindow):
     def on_tblFInputPins_doubleclicked(self, index):
         print("Double Click", self.ui.tblFInputPins.model().index(index.row(), 0).data())
         print("Row %d and Column %d was clicked" % (index.row(), index.column()))
-        print(self.ui.tblFInputPins.model().data(index, QtCore.Qt.UserRole))
+        print(self.ui.tblFInputPins.model().data(index, Qt.UserRole))
 
     def on_tblFOutputPins_Changed(self, index):
         row = self.ui.tblFOutputPins.selectionModel().currentIndex().row()
@@ -1849,7 +1836,7 @@ class PackageBuilder(QMdiSubWindow):
     def on_tblFOutputPins_clicked(self, index):
         print("Click", self.ui.tblFOutputPins.model().index(index.row(), 0).data())
         print("Row %d and Column %d was clicked" % (index.row(), index.column()))
-        print(self.ui.tblFOutputPins.model().data(index, QtCore.Qt.UserRole))
+        print(self.ui.tblFOutputPins.model().data(index, Qt.UserRole))
         self.ReferenceNumber_id = self.ui.tblFOutputPins.model().index(index.row(), 0).data()
         #self.loadProjectdata()
 
@@ -1863,7 +1850,7 @@ class PackageBuilder(QMdiSubWindow):
     def on_tblFOutputPins_doubleclicked(self, index):
         print("Double Click", self.tblFOutputPins.model().index(index.row(), 0).data())
         print("Row %d and Column %d was clicked" % (index.row(), index.column()))
-        print(self.tblFOutputPins.model().data(index, QtCore.Qt.UserRole))
+        print(self.tblFOutputPins.model().data(index, Qt.UserRole))
 
     def loadPinData(self, data):
         self.initializePinData()
@@ -2122,9 +2109,9 @@ class PackageBuilder(QMdiSubWindow):
                         inputpinlistmodel.setItem(row, 2, QtGui.QStandardItem(
                             self.selectedNodeData[defname]["PinDefs"]["Inputs"][pindata]["DefaultValue"]))
 
-                inputpinlistmodel.setHeaderData(0, QtCore.Qt.Horizontal, 'Name', role=QtCore.Qt.DisplayRole)
-                inputpinlistmodel.setHeaderData(1, QtCore.Qt.Horizontal, 'Data Type', role=QtCore.Qt.DisplayRole)
-                inputpinlistmodel.setHeaderData(2, QtCore.Qt.Horizontal, 'Default Value', role=QtCore.Qt.DisplayRole)
+                inputpinlistmodel.setHeaderData(0, Qt.Horizontal, 'Name', role=Qt.DisplayRole)
+                inputpinlistmodel.setHeaderData(1, Qt.Horizontal, 'Data Type', role=Qt.DisplayRole)
+                inputpinlistmodel.setHeaderData(2, Qt.Horizontal, 'Default Value', role=Qt.DisplayRole)
 
             outputPinList = []
             outputpinlistmodel = QtGui.QStandardItemModel(0, 2)
@@ -2147,9 +2134,9 @@ class PackageBuilder(QMdiSubWindow):
                         outputpinlistmodel.setItem(row, 2, QtGui.QStandardItem(
                             self.selectedNodeData[defname]["PinDefs"]["Outputs"][pindata]["DefaultValue"]))
 
-                outputpinlistmodel.setHeaderData(0, QtCore.Qt.Horizontal, 'Name', role=QtCore.Qt.DisplayRole)
-                outputpinlistmodel.setHeaderData(1, QtCore.Qt.Horizontal, 'Data Type', role=QtCore.Qt.DisplayRole)
-                outputpinlistmodel.setHeaderData(2, QtCore.Qt.Horizontal, 'Default Value', role=QtCore.Qt.DisplayRole)
+                outputpinlistmodel.setHeaderData(0, Qt.Horizontal, 'Name', role=Qt.DisplayRole)
+                outputpinlistmodel.setHeaderData(1, Qt.Horizontal, 'Data Type', role=Qt.DisplayRole)
+                outputpinlistmodel.setHeaderData(2, Qt.Horizontal, 'Default Value', role=Qt.DisplayRole)
 
             self.ui.tblNInputPins.setModel(inputpinlistmodel)
             self.ui.tblNOutputPins.setModel(outputpinlistmodel)

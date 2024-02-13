@@ -1,24 +1,12 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 import os
 import shutil
 
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy.QtWidgets import *
+from PySide6 import QtCore
+from PySide6.QtCore import (
+    Qt,
+)
+from PySide6 import QtGui
+from PySide6.QtWidgets import *
 
 from PyFlow import Wizards
 from PyFlow.Wizards.WizardDialogueBase import WizardDialogueBase
@@ -44,28 +32,28 @@ class PackageWizard(WizardDialogueBase):
         # if we are here, everything is correct
         packageName = self.lePkgName.text()
         includeUINodeFactory = (
-            self.cbIncludeUINodeFactory.checkState() == QtCore.Qt.Checked
+            self.cbIncludeUINodeFactory.checkState() == Qt.Checked
             and self.cbIncludeUINodeFactory.isEnabled()
         )
         IncludeUIPinFactory = (
-            self.cbUIPinFactory.checkState() == QtCore.Qt.Checked
+            self.cbUIPinFactory.checkState() == Qt.Checked
             and self.cbUIPinFactory.isEnabled()
         )
         IncludePinInputWidgetFactory = (
-            self.cbPinInputWidgetFactory.checkState() == QtCore.Qt.Checked
+            self.cbPinInputWidgetFactory.checkState() == Qt.Checked
             and self.cbPinInputWidgetFactory.isEnabled()
         )
-        IncludePrefsWidget = self.cbPrefsWidget.checkState() == QtCore.Qt.Checked
+        IncludePrefsWidget = self.cbPrefsWidget.checkState() == Qt.Checked
         generatePackage(
             packageName,
             self.pbOutPathSelect.text(),
-            bIncludeClassNode=self.cbIncludeClassNode.checkState() == QtCore.Qt.Checked,
-            bIncludeFooLib=self.cbIncludeFooLib.checkState() == QtCore.Qt.Checked,
+            bIncludeClassNode=self.cbIncludeClassNode.checkState() == Qt.Checked,
+            bIncludeFooLib=self.cbIncludeFooLib.checkState() == Qt.Checked,
             bIncludeUINodeFactory=includeUINodeFactory,
-            bIncludePin=self.cbIncludePin.checkState() == QtCore.Qt.Checked,
+            bIncludePin=self.cbIncludePin.checkState() == Qt.Checked,
             bIncludeUIPinFactory=IncludeUIPinFactory,
-            bIncludeTool=self.cbIncludeTool.checkState() == QtCore.Qt.Checked,
-            bIncludeExporter=self.cbIncludeExporter.checkState() == QtCore.Qt.Checked,
+            bIncludeTool=self.cbIncludeTool.checkState() == Qt.Checked,
+            bIncludeExporter=self.cbIncludeExporter.checkState() == Qt.Checked,
             bIncludePinInputWidgetFactory=IncludePinInputWidgetFactory,
             bIncludePrefsWindget=IncludePrefsWidget,
         )
@@ -79,7 +67,7 @@ class PackageWizard(WizardDialogueBase):
         # allow only letters without spaces
         self.lePkgName.setValidator(QtGui.QRegularExpressionValidator(QtCore.QRegularExpression("^[A-Za-z]+$")))
 
-        self.lePkgName.setAlignment(QtCore.Qt.AlignCenter)
+        self.lePkgName.setAlignment(Qt.AlignCenter)
         self.p1Layout.addWidget(self.lePkgName)
         self.addPageWidget(self.p1, "Choose a name for your new package!")
 
@@ -157,14 +145,14 @@ class PackageWizard(WizardDialogueBase):
         )
 
     def checkUIPinFactories(self, state):
-        checked = self.cbIncludePin.checkState() == QtCore.Qt.Checked
+        checked = self.cbIncludePin.checkState() == Qt.Checked
         self.cbPinInputWidgetFactory.setEnabled(checked)
         self.cbUIPinFactory.setEnabled(checked)
 
     def checkIncludeUINodeFactory(self, state):
         # ui node factories can be created now only for class nodes
         self.cbIncludeUINodeFactory.setEnabled(
-            self.cbIncludeClassNode.checkState() == QtCore.Qt.Checked
+            self.cbIncludeClassNode.checkState() == Qt.Checked
         )
 
     def onGotoComponentsDocs(self):
@@ -176,11 +164,11 @@ class PackageWizard(WizardDialogueBase):
     def isPackaeModuleSelected(self):
         return any(
             [
-                self.cbIncludeClassNode.checkState() == QtCore.Qt.Checked,
-                self.cbIncludeFooLib.checkState() == QtCore.Qt.Checked,
-                self.cbIncludePin.checkState() == QtCore.Qt.Checked,
-                self.cbIncludeTool.checkState() == QtCore.Qt.Checked,
-                self.cbIncludeExporter.checkState() == QtCore.Qt.Checked,
+                self.cbIncludeClassNode.checkState() == Qt.Checked,
+                self.cbIncludeFooLib.checkState() == Qt.Checked,
+                self.cbIncludePin.checkState() == Qt.Checked,
+                self.cbIncludeTool.checkState() == Qt.Checked,
+                self.cbIncludeExporter.checkState() == Qt.Checked,
             ]
         )
 

@@ -1,21 +1,14 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
+from PySide6 import QtCore
+from PySide6 import QtGui
+from PySide6.QtCore import (
+    Qt,
+    Signal,
+)
+from PySide6.QtGui import (
+    QAction,
+)
+from PySide6.QtWidgets import QTextBrowser
 
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy.QtWidgets import QAction, QTextBrowser
 from PyFlow.UI.Tool.Tool import DockTool
 from PyFlow.UI.Utils.stylesheet import editableStyleSheet
 from PyFlow.Core.Common import SingletonDecorator
@@ -24,7 +17,7 @@ import sys
 import logging
 import os
 import subprocess
-
+from PyFlow.Core import graph_manager
 
 REDIRECT = ConfigManager().shouldRedirectOutput()
 
@@ -87,11 +80,11 @@ addLoggingLevel("CONSOLEOUTPUT", logging.ERROR + 5)
 
 @SingletonDecorator
 class SignalHandler(QtCore.QObject):
-    messageWritten = QtCore.Signal(str)
-    errorWritten = QtCore.Signal(str)
-    warningWritten = QtCore.Signal(str)
-    flushSig = QtCore.Signal()
-    progressSig = QtCore.Signal(int)
+    messageWritten = Signal(str)
+    errorWritten = Signal(str)
+    warningWritten = Signal(str)
+    flushSig = Signal()
+    progressSig = Signal(int)
     _stdout = None
     _stderr = None
     text = ""
@@ -144,7 +137,7 @@ class LoggerTool(DockTool):
     def __init__(self):
         super(LoggerTool, self).__init__()
         self.logView = QTextBrowser()
-        self.logView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.logView.setContextMenuPolicy(Qt.ActionsContextMenu)
         self.logView.setOpenLinks(False)
         self.logView.setReadOnly(True)
         self.logView.setStyleSheet(
@@ -267,8 +260,7 @@ class LoggerTool(DockTool):
             editCmd = editCmd.replace("@FILE", url.url().replace("::", ":"))
             subprocess.Popen(editCmd)
         else:
-            man = self.pyFlowInstance.graphManager
-            node = man.get().findNode(url.url())
+            node = graph_manager.findNode(url.url())
             if node:
                 self.pyFlowInstance.getCanvas().clearSelection()
                 node.getWrapper().setSelected(True)
@@ -294,7 +286,7 @@ class LoggerTool(DockTool):
 
     @staticmethod
     def defaultDockArea():
-        return QtCore.Qt.BottomDockWidgetArea
+        return Qt.BottomDockWidgetArea
 
     @staticmethod
     def toolTip():

@@ -1,26 +1,19 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy.QtWidgets import QApplication
-from qtpy.QtWidgets import QGraphicsWidget
-from qtpy.QtWidgets import QMenu
-from qtpy.QtWidgets import QInputDialog
-from qtpy.QtWidgets import QSizePolicy
-
+from PySide6 import QtGui
+from PySide6.QtCore import (
+    QPointF,
+    QRectF,
+    QSizeF,
+    Qt,
+    Signal,
+)
+from PySide6.QtWidgets import (
+    QApplication,
+    QGraphicsWidget,
+    QMenu,
+    QInputDialog,
+    QSizePolicy,
+)
+from PyFlow.Core.PinBase import PinBase
 from PyFlow.UI.Canvas.Painters import PinPainter
 from PyFlow.UI.Canvas.WatchPinValueItem import WatchItem
 from PyFlow.UI.Canvas.UICommon import *
@@ -34,18 +27,18 @@ class UIPinBase(QGraphicsWidget):
     """
 
     # Event called when pin is connected
-    OnPinConnected = QtCore.Signal(object)
+    OnPinConnected = Signal(object)
     # Event called when pin is disconnected
-    OnPinDisconnected = QtCore.Signal(object)
+    OnPinDisconnected = Signal(object)
     # Event called when data been set
-    dataBeenSet = QtCore.Signal(object)
+    dataBeenSet = Signal(object)
     # Event called when pin name changes
-    displayNameChanged = QtCore.Signal(str)
-    OnPinChanged = QtCore.Signal(object)
-    OnPinDeleted = QtCore.Signal(object)
-    OnPinExecute = QtCore.Signal(object)
+    displayNameChanged = Signal(str)
+    OnPinChanged = Signal(object)
+    OnPinDeleted = Signal(object)
+    OnPinExecute = Signal(object)
 
-    def __init__(self, owningNode, raw_pin):
+    def __init__(self, owningNode, raw_pin: PinBase):
         """UI wrapper for :class:`PyFlow.Core.PinBase`
 
         :param owningNode: Owning node
@@ -99,20 +92,20 @@ class UIPinBase(QGraphicsWidget):
         self.bLabelHidden = False
         if self._rawPin is not None:
             self._pinColor = QtGui.QColor(*self._rawPin.color())
-        self._labelColor = QtCore.Qt.white
-        self._execPen = QtGui.QPen(Colors.White, 0.5, QtCore.Qt.SolidLine)
+        self._labelColor = Qt.white
+        self._execPen = QtGui.QPen(Colors.White, 0.5, Qt.SolidLine)
         self._dirty_pen = QtGui.QPen(
             Colors.DirtyPen,
             0.5,
-            QtCore.Qt.DashLine,
-            QtCore.Qt.RoundCap,
-            QtCore.Qt.RoundJoin,
+            Qt.DashLine,
+            Qt.RoundCap,
+            Qt.RoundJoin,
         )
 
         self.uiConnectionList = []
 
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
-        self.pinCircleDrawOffset = QtCore.QPointF()
+        self.pinCircleDrawOffset = QPointF()
         # TODO: This is check is for PinGroup. Improve it
         if self._rawPin is not None:
             self.setToolTip(self._rawPin.description)
@@ -120,7 +113,7 @@ class UIPinBase(QGraphicsWidget):
     @property
     def wrapperJsonData(self):
         return self._rawPin.wrapperJsonData
-    
+
     def on_rawPin_executed(self, *args, **kwargs):
         self.OnPinExecute.emit(self)
 
@@ -181,25 +174,25 @@ class UIPinBase(QGraphicsWidget):
     def pinCenter(self):
         """Point relative to pin widget, where circle is drawn."""
 
-        frame = QtCore.QRectF(QtCore.QPointF(0, 0), self.geometry().size())
+        frame = QRectF(QPointF(0, 0), self.geometry().size())
         halfPinSize = self.pinSize / 2
         pinX = self.pinSize
         pinY = frame.height() / 2
         if not self.bLabelHidden:
             if self.direction == PinDirection.Output:
                 pinX = frame.width() - self.pinSize + halfPinSize
-        result = QtCore.QPointF(pinX, pinY)
+        result = QPointF(pinX, pinY)
         if self.owningNode().collapsed:
             labelHeight = self.owningNode().labelHeight
             # labelHeight += self.owningNode().nodeLayout.spacing()
             if self.direction == PinDirection.Input:
                 result = self.mapFromItem(
-                    self.owningNode(), QtCore.QPointF(0, labelHeight)
+                    self.owningNode(), QPointF(0, labelHeight)
                 )
             if self.direction == PinDirection.Output:
                 result = self.mapFromItem(
                     self.owningNode(),
-                    QtCore.QPointF(
+                    QPointF(
                         self.owningNode().sizeHint(None, None).width(), labelHeight
                     ),
                 )
@@ -422,7 +415,7 @@ class UIPinBase(QGraphicsWidget):
             width += QtGui.QFontMetrics(self._font).horizontalAdvance(
                 self.displayName()
             )
-        return QtCore.QSizeF(width, height)
+        return QSizeF(width, height)
 
     def shape(self):
         path = QtGui.QPainterPath()
@@ -538,7 +531,7 @@ class PinGroup(UIPinBase):
                     if expanded:
                         wire.destinationPositionOverride = None
                     else:
-                        wire.destinationPositionOverride = lambda: self.scenePos() + QtCore.QPointF(
+                        wire.destinationPositionOverride = lambda: self.scenePos() + QPointF(
                             0, self.geometry().height()
                         )
 
@@ -547,7 +540,7 @@ class PinGroup(UIPinBase):
                     if expanded:
                         wire.sourcePositionOverride = None
                     else:
-                        wire.sourcePositionOverride = lambda: self.scenePos() + QtCore.QPointF(
+                        wire.sourcePositionOverride = lambda: self.scenePos() + QPointF(
                             self.geometry().width(), self.geometry().height()
                         )
 
@@ -604,20 +597,20 @@ class PinGroup(UIPinBase):
         width = (
             QtGui.QFontMetrics(self._font).horizontalAdvance(self.name) + self.pinSize
         )
-        return QtCore.QSizeF(width, height)
+        return QSizeF(width, height)
 
     def paint(self, painter, option, widget):
-        frame = QtCore.QRectF(QtCore.QPointF(0, 0), self.geometry().size())
+        frame = QRectF(QPointF(0, 0), self.geometry().size())
         frame = frame.translated(self.pinSize * 1.1, 0)
-        bgRect = QtCore.QRectF(frame)
+        bgRect = QRectF(frame)
         bgRect.setX(0)
         painter.setFont(self._font)
         painter.setPen(QtGui.QPen(self.labelColor, 1.0))
         painter.drawText(frame, self.name)
 
         painter.setPen(QtGui.QPen(self.labelColor, 0.1))
-        square = QtCore.QRectF(
-            QtCore.QPointF(0, 0), QtCore.QSizeF(self.pinSize / 1.1, self.pinSize / 1.1)
+        square = QRectF(
+            QPointF(0, 0), QSizeF(self.pinSize / 1.1, self.pinSize / 1.1)
         )
         square2 = square.translated(0, (self.pinSize / 1.1) / 3)
         painter.drawRect(square2)

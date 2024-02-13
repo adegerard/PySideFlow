@@ -1,33 +1,22 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 import json
 import os
 import uuid
 from inspect import getfullargspec
 
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy.QtWidgets import *
+from PySide6 import QtCore
+from PySide6.QtCore import (
+    Qt,
+    Signal,
+)
+from PySide6 import QtGui
+from PySide6.QtWidgets import *
 
 from PyFlow import GET_PACKAGES
 from PyFlow import GET_PACKAGE_PATH
 
 from PyFlow.Core.Common import *
 from PyFlow.UI.Canvas.UICommon import *
-from PyFlow.UI.EditorHistory import EditorHistory
+from PyFlow.UI import editor_history
 from PyFlow.Core.NodeBase import NodeBase
 
 from PyFlow.UI.Utils.stylesheet import editableStyleSheet
@@ -54,8 +43,8 @@ class NodeBoxLineEdit(QLineEdit):
 
 
 class NodeBoxTreeWidget(QTreeWidget):
-    showInfo = QtCore.Signal(object)
-    hideInfo = QtCore.Signal()
+    showInfo = Signal(object)
+    hideInfo = Signal()
 
     def __init__(
         self,
@@ -80,7 +69,7 @@ class NodeBoxTreeWidget(QTreeWidget):
         self.setFrameShadow(QFrame.Sunken)
         self.setObjectName("tree_nodes")
         self.setSortingEnabled(True)
-        self.sortByColumn(0, QtCore.Qt.AscendingOrder)
+        self.sortByColumn(0, Qt.AscendingOrder)
         self.setColumnCount(0)
         self.setHeaderHidden(True)
         self.bUseDragAndDrop = useDragAndDrop
@@ -140,7 +129,7 @@ class NodeBoxTreeWidget(QTreeWidget):
                 if categoryPath not in self.categoryPaths:
                     rootFolderItem = QTreeWidgetItem(self)
                     rootFolderItem.bCategory = True
-                    rootFolderItem.setFlags(QtCore.Qt.ItemIsEnabled)
+                    rootFolderItem.setFlags(Qt.ItemIsEnabled)
                     rootFolderItem.setText(0, folderName)
                     rootFolderItem.setBackground(
                         folderId, editableStyleSheet().BgColorBright
@@ -153,7 +142,7 @@ class NodeBoxTreeWidget(QTreeWidget):
                     childCategoryItem = QTreeWidgetItem(
                         self.categoryPaths[parentCategoryPath]
                     )
-                    childCategoryItem.setFlags(QtCore.Qt.ItemIsEnabled)
+                    childCategoryItem.setFlags(Qt.ItemIsEnabled)
                     childCategoryItem.bCategory = True
                     childCategoryItem.setText(0, folderName)
                     childCategoryItem.setBackground(
@@ -350,7 +339,7 @@ class NodeBoxTreeWidget(QTreeWidget):
             if dataType is not None:
                 for categoryItem in self.categoryPaths.values():
                     categoryItem.setExpanded(True)
-            self.sortItems(0, QtCore.Qt.AscendingOrder)
+            self.sortItems(0, Qt.AscendingOrder)
 
     def mousePressEvent(self, event):
         super(NodeBoxTreeWidget, self).mousePressEvent(event)
@@ -405,13 +394,13 @@ class NodeBoxTreeWidget(QTreeWidget):
                 for pin in node.UIoutputs.values():
                     wire = self.canvas.connectPinsInternal(pressedPin, pin)
                     if wire is not None:
-                        EditorHistory().saveState("Connect pins", modify=True)
+                        editor_history.saveState("Connect pins", modify=True)
                         break
             if pressedPin.direction == PinDirection.Output:
                 for pin in node.UIinputs.values():
                     wire = self.canvas.connectPinsInternal(pin, pressedPin)
                     if wire is not None:
-                        EditorHistory().saveState("Connect pins", modify=True)
+                        editor_history.saveState("Connect pins", modify=True)
                         break
         else:
             drag = QtGui.QDrag(self)
@@ -504,7 +493,7 @@ class NodesBox(QFrame):
         self.verticalLayout.addWidget(self.lineEdit)
         self.lineEdit.textChanged.connect(self.leTextChanged)
         self.nodeInfoWidget = QTextBrowser()
-        self.nodeInfoWidget.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.nodeInfoWidget.setFocusPolicy(Qt.NoFocus)
         self.nodeInfoWidget.setObjectName("nodeBoxInfoBrowser")
         self.nodeInfoWidget.setOpenExternalLinks(True)
         self.splitter.addWidget(self.nodeInfoWidget)

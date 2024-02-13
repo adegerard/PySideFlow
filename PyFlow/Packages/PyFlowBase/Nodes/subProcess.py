@@ -1,18 +1,3 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 import asyncio
 import time
 import uuid
@@ -49,7 +34,7 @@ class subProcess(NodeBase):
 
     def addInPin(self, name, dataType):
         p = self.createInputPin(name, dataType)
-        p.enableOptions(PinOptions.RenamingEnabled | PinOptions.Dynamic 
+        p.enableOptions(PinOptions.RenamingEnabled | PinOptions.Dynamic
                         | PinOptions.AllowMultipleConnections | PinOptions.Storable)
         return p
 
@@ -119,13 +104,13 @@ class subProcess(NodeBase):
                     cmd_opt_ext += " {0} ".format(elem.getData())
                     continue
                 if 1 == len(name) and name.isalpha():
-                    cmd_opt_ext += " -{0} {1} ".format(name ,elem.getData()) 
+                    cmd_opt_ext += " -{0} {1} ".format(name ,elem.getData())
                     continue
                 if name[:1] == "-":
-                    cmd_opt_ext += " {0} {1} ".format(name ,elem.getData())    
-                    continue 
-                cmd_opt_ext += " --{0} {1} ".format(name ,elem.getData()) 
-            cmd = f"{cmd_head} {cmd_opt} {cmd_opt_ext} {cmd_end} "  
+                    cmd_opt_ext += " {0} {1} ".format(name ,elem.getData())
+                    continue
+                cmd_opt_ext += " --{0} {1} ".format(name ,elem.getData())
+            cmd = f"{cmd_head} {cmd_opt} {cmd_opt_ext} {cmd_end} "
             if self.proc_task:
                 self.proc_task.cancel("interrupt")
                 self.proc_task = None
@@ -134,11 +119,11 @@ class subProcess(NodeBase):
             self.proc_task_kwargs = kwargs
             self.is_running.setData(True)
             self.proc_task = asyncio.get_event_loop().create_task(self._run_cmd(self.proc_task_uuid, cmd, self.cwd.getData()))
-        
+
     async def _run_cmd(self, _uuid, cmd, cwd):
         if None != self.proc and None == self.proc.returncode:
             self.proc.terminate()
-        self.computing.send()
+        self.computing.emit()
         self.proc = None
         uuid = _uuid
         if len(cwd.strip(" ")) > 0:
@@ -153,7 +138,7 @@ class subProcess(NodeBase):
         if uuid == self.proc_task_uuid:
             self.proc = None
         return uuid, ret_code, stdout, stderr
-    
+
     def Tick(self, delta):
         super(subProcess, self).Tick(delta)
         if self.proc_task and self.proc_task.done():
@@ -177,6 +162,6 @@ class subProcess(NodeBase):
                 if None == self.proc.returncode:
                     self.proc.terminate()
                 self.proc = None
-            self.computed.send()
+            self.computed.emit()
             self.is_running.setData(False)
             self.outExecPin.call(*self.proc_task_args, **self.proc_task_kwargs)

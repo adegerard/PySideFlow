@@ -1,33 +1,22 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 import weakref
 from uuid import UUID, uuid4
 
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy.QtWidgets import QGraphicsPathItem
-from qtpy.QtWidgets import QGraphicsEllipseItem
-from qtpy.QtWidgets import QMenu
-from qtpy.QtWidgets import QStyle
+from PySide6.QtCore import (
+    Qt,
+    QPoint,
+    QPointF,
+    QTimeLine,
+)
+from PySide6 import QtGui
+from PySide6.QtWidgets import QGraphicsPathItem
+from PySide6.QtWidgets import QGraphicsEllipseItem
+from PySide6.QtWidgets import QMenu
+from PySide6.QtWidgets import QStyle
 
 from PyFlow.UI.Utils.stylesheet import editableStyleSheet, Colors, ConnectionTypes
 from PyFlow.UI.Canvas.UICommon import NodeDefaults
 from PyFlow.UI.Canvas.Painters import ConnectionPainter
 from PyFlow.Core.Common import *
-
 
 # UIConnection between pins
 class UIConnection(QGraphicsPathItem):
@@ -36,7 +25,7 @@ class UIConnection(QGraphicsPathItem):
 
     def __init__(self, source, destination, canvas):
         QGraphicsPathItem.__init__(self)
-        self.setAcceptedMouseButtons(QtCore.Qt.LeftButton)
+        self.setAcceptedMouseButtons(Qt.LeftButton)
         self.setAcceptHoverEvents(True)
         self.setFlag(QGraphicsPathItem.ItemIsSelectable)
         self._menu = QMenu()
@@ -56,8 +45,8 @@ class UIConnection(QGraphicsPathItem):
 
         self.mPath = QtGui.QPainterPath()
 
-        self.cp1 = QtCore.QPointF(0.0, 0.0)
-        self.cp2 = QtCore.QPointF(0.0, 0.0)
+        self.cp1 = QPointF(0.0, 0.0)
+        self.cp2 = QPointF(0.0, 0.0)
 
         self.setZValue(NodeDefaults().Z_LAYER - 1)
 
@@ -72,9 +61,9 @@ class UIConnection(QGraphicsPathItem):
         self.pen = QtGui.QPen(
             self.color,
             self.thickness,
-            QtCore.Qt.SolidLine,
-            QtCore.Qt.RoundCap,
-            QtCore.Qt.RoundJoin,
+            Qt.SolidLine,
+            Qt.RoundCap,
+            Qt.RoundJoin,
         )
 
         points = self.getEndPoints()
@@ -113,16 +102,16 @@ class UIConnection(QGraphicsPathItem):
             self.bubble.setPos(point)
 
             self.bubble.hide()
-            
+
             self.source().OnPinExecute.connect(self.performEvaluationFeedback)
             self.shouldAnimate = False
-            self.timeline = QtCore.QTimeLine(2000)
+            self.timeline = QTimeLine(2000)
             self.timeline.setFrameRange(0, 100)
             self.timeline.frameChanged.connect(self.timelineFrameChanged)
             self.timeline.setLoopCount(0)
 
     def performEvaluationFeedback(self, *args, **kwargs):
-        if self.timeline.state() == QtCore.QTimeLine.State.NotRunning:
+        if self.timeline.state() == QTimeLine.State.NotRunning:
             self.shouldAnimate = True
             # spawn bubble
             self.bubble.show()
@@ -253,7 +242,7 @@ class UIConnection(QGraphicsPathItem):
                 self._uid
             )
             self._uid = value
-    
+
     # TODO: Check why this serialization sometimes fails
     def applyJsonData(self, data):
         hOffsetL = data["hOffsetL"]
@@ -519,7 +508,7 @@ class UIConnection(QGraphicsPathItem):
     def shape(self):
         qp = QtGui.QPainterPathStroker()
         qp.setWidth(10.0)
-        qp.setCapStyle(QtCore.Qt.SquareCap)
+        qp.setCapStyle(Qt.SquareCap)
         return qp.createStroke(self.path())
 
     def updateCurve(self, p1, p2):
@@ -530,14 +519,14 @@ class UIConnection(QGraphicsPathItem):
         self.mPath.moveTo(p1)
         if xDistance < 0:
             self.mPath.cubicTo(
-                QtCore.QPoint(p1.x() + xDistance / -multiply, p1.y()),
-                QtCore.QPoint(p2.x() - xDistance / -multiply, p2.y()),
+                QPoint(p1.x() + xDistance / -multiply, p1.y()),
+                QPoint(p2.x() - xDistance / -multiply, p2.y()),
                 p2,
             )
         else:
             self.mPath.cubicTo(
-                QtCore.QPoint(p1.x() + xDistance / multiply, p1.y()),
-                QtCore.QPoint(p2.x() - xDistance / 2, p2.y()),
+                QPoint(p1.x() + xDistance / multiply, p1.y()),
+                QPoint(p2.x() - xDistance / 2, p2.y()),
                 p2,
             )
 

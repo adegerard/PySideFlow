@@ -1,18 +1,3 @@
-## Copyright 2023 David Lario
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 import os
 import sys
 import subprocess
@@ -24,18 +9,21 @@ import shutil
 from string import ascii_letters
 import random
 
-from qtpy.QtCore import QCoreApplication
+from PySide6.QtCore import QCoreApplication
 #import mdi_rc
-from qtpy import QtGui
-from qtpy import QtCore
-from qtpy.QtWidgets import *
+from PySide6 import QtGui
+from PySide6 import QtCore
+from PySide6.QtCore import (
+    Qt,
+    Signal
+)
+from PySide6.QtWidgets import *
 
 from PyFlow import GET_PACKAGES
 from PyFlow.Core.Common import SingletonDecorator
 from PyFlow.Core.PathsRegistry import PathsRegistry
 from PyFlow.Core.version import *
 from PyFlow.Core.GraphBase import GraphBase
-from PyFlow.Core.GraphManager import GraphManagerSingleton
 from PyFlow.UI.Canvas.UICommon import *
 from PyFlow.UI.Widgets.BlueprintCanvas import BlueprintCanvasWidget
 from PyFlow.UI.Views.NodeBox import NodesBox
@@ -59,18 +47,15 @@ from PyFlow.Input import InputAction, InputActionType
 from PyFlow.Input import InputManager
 from PyFlow.ConfigManager import ConfigManager
 from PyFlow.UI.Canvas.CanvasBase import CanvasBase
+from PyFlow.Core import graph_manager
 
 import PyFlow.UI.resources
 
 EDITOR_TARGET_FPS = 60
 
-from qtpy.QtCore import (QSignalMapper, QRect, QSize, Qt, QFile, QFileInfo, QTextStream, QPoint, QSettings)
-from qtpy.QtGui import (QIcon, QKeySequence, QUndoStack)
-from qtpy.QtWidgets import (QAction, QApplication, QFileDialog, QMainWindow, QMdiArea, QMdiSubWindow, QMessageBox, QWidget, QMenuBar)
-
-'''from PyQt5.QtCore import (QFile, QFileInfo, QPoint, QSettings, QSignalMapper, QSize, QTextStream, Qt)
-from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QMainWindow, QMdiArea, QMessageBox, QWidget, QMenuBar)'''
+from PySide6.QtCore import (QSignalMapper, QRect, QSize, Qt, QFile, QFileInfo, QTextStream, QPoint, QSettings)
+from PySide6.QtGui import (QIcon, QKeySequence, QUndoStack, QAction,)
+from PySide6.QtWidgets import (QApplication, QFileDialog, QMainWindow, QMdiArea, QMdiSubWindow, QMessageBox, QWidget, QMenuBar)
 
 def generateRandomString(numSymbolds=5):
     result = ""
@@ -94,17 +79,16 @@ def winTitle():
 
 class pyflowChild(QMdiSubWindow):
     sequenceNumber = 1
-    newFileExecuted = QtCore.Signal(bool)
-    fileBeenLoaded = QtCore.Signal()
+    newFileExecuted = Signal(bool)
+    fileBeenLoaded = Signal()
 
     def __init__(self, parent):
         super(pyflowChild, self).__init__(parent)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.isUntitled = True
         self.guid = uuid.uuid4()
         self.parent = parent
-        self.graphManager = GraphManagerSingleton()
-        self.canvasWidget = BlueprintCanvasWidget(self.graphManager.get(), self)
+        self.canvasWidget = BlueprintCanvasWidget(graph_manager, self)
         self.canvasWidget.setObjectName("canvasWidget")
         self._currentFileName = ""
 
@@ -359,7 +343,7 @@ class pyflowChild(QMdiSubWindow):
         loadAction.setToolTip("")
         loadAction.triggered.connect(self.parent.load)
 
-        self.parent.addToolBar(QtCore.Qt.TopToolBarArea, toolbar)
+        self.parent.addToolBar(Qt.TopToolBarArea, toolbar)
 
         self.parent.toolBarDict[self.guid] = toolbar
 
@@ -476,7 +460,7 @@ class pyflowChild(QMdiSubWindow):
                         settings.endGroup()
                     settings.endGroup()
 
-        EditorHistory().saveState("New file")
+        editor_history.saveState("New file")
 
         for name, package in GET_PACKAGES().items():
             prefsWidgets = package.PrefsWidgets()
@@ -507,12 +491,12 @@ class pyflowChild(QMdiSubWindow):
             elif shouldSave == QMessageBox.Discard:
                 return
 
-            EditorHistory().clear()
+            editor_history.clear()
             historyTools = self.getRegisteredTools(classNameFilters=["HistoryTool"])
             for historyTools in historyTools:
                 historyTools.onClear()
             self.newFile()
-            EditorHistory().saveState("New file")
+            editor_history.saveState("New file")
             self.currentFileName = None
             self.modified = False
             self.updateLabel()
@@ -553,16 +537,16 @@ class pyflowChild(QMdiSubWindow):
             return
 
         if clearHistory:
-            EditorHistory().clear()
+            editor_history.clear()
             historyTools = self.getRegisteredTools(classNameFilters=["HistoryTool"])
             for historyTools in historyTools:
                 historyTools.onClear()
 
         self.newFile(keepRoot=False)
         # load raw data
-        self.graphManager.get().deserialize(data)
+        graph_manager.deserialize(data)
         self.fileBeenLoaded.emit()
-        self.graphManager.get().selectGraphByName(data["activeGraph"])
+        graph_manager.selectGraphByName(data["activeGraph"])
         self.updateLabel()
         PathsRegistry().rebuild()
 
@@ -801,7 +785,7 @@ class pyflowChild(QMdiSubWindow):
         # Tick all graphs
         # each graph will tick owning raw nodes
         # each raw node will tick its ui wrapper if it exists
-        self.graphManager.get().Tick(deltaTime)
+        graph_manager.Tick(deltaTime)
 
         # Tick canvas. Update ui only stuff such animation etc.
         self.canvasWidget.Tick(deltaTime)
@@ -821,11 +805,11 @@ class MDIMain(QMainWindow):
         self.mdiArea.subWindowActivated.connect(self.updateMenus)
         self.windowMapper = QSignalMapper(self)
         self.guid = uuid.uuid4()
-        self.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.setFocusPolicy(Qt.StrongFocus)
         self.currentSoftware = ""
         self.undoStack = QUndoStack(self)
         self.setContentsMargins(1, 1, 1, 1)
-        self.setTabPosition(QtCore.Qt.AllDockWidgetAreas, QTabWidget.North)
+        self.setTabPosition(Qt.AllDockWidgetAreas, QTabWidget.North)
         self.setDockOptions(QMainWindow.AnimatedDocks | QMainWindow.AllowNestedDocks)
         self.menuBar = QMenuBar(None) #self
         self.menuBar.setGeometry(QRect(0, 0, 863, 21))
@@ -834,7 +818,7 @@ class MDIMain(QMainWindow):
         self.windowMapper = QSignalMapper(self)
         self._tools = set()
         self.setWindowTitle(winTitle())
-        self.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.setFocusPolicy(Qt.StrongFocus)
         self.setWindowIcon(QtGui.QIcon(":/LogoBpApp.png"))
         self.undoStack = QUndoStack(self)
         self.setMouseTracking(True)
@@ -920,7 +904,7 @@ class MDIMain(QMainWindow):
         loadAction.setToolTip("")
         loadAction.triggered.connect(self.load)
 
-        self.addToolBar(QtCore.Qt.TopToolBarArea, toolbar)
+        self.addToolBar(Qt.TopToolBarArea, toolbar)
 
         self.toolBarDict[self.guid] = toolbar
 
@@ -1029,7 +1013,7 @@ class MDIMain(QMainWindow):
             data = json.load(f)
             self.loadFromData(data, clearHistory=True)
             self.currentFileName = filePath
-            EditorHistory().saveState("Open {}".format(os.path.basename(self.currentFileName)))
+            editor_history.saveState("Open {}".format(os.path.basename(self.currentFileName)))
 
 
     def loadFromData(self, data, clearHistory=False):
@@ -1046,16 +1030,16 @@ class MDIMain(QMainWindow):
             return
 
         if clearHistory:
-            EditorHistory().clear()
+            editor_history.clear()
             historyTools = self.getRegisteredTools(classNameFilters=["HistoryTool"])
             for historyTools in historyTools:
                 historyTools.onClear()
 
         self.newFile(keepRoot=False)
         # load raw data
-        self.graphManager.get().deserialize(data)
+        graph_manager.deserialize(data)
         self.fileBeenLoaded.emit()
-        self.graphManager.get().selectGraphByName(data["activeGraph"])
+        graph_manager.selectGraphByName(data["activeGraph"])
         self.updateLabel()
         PathsRegistry().rebuild()
 

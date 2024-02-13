@@ -1,19 +1,8 @@
-# Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
 
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-
-# http://www.apache.org/licenses/LICENSE-2.0
-
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-
-from blinker import Signal
+from PySide6.QtCore import (
+    Qt,
+    Signal,
+)
 import json
 
 from PyFlow.Core import PinBase
@@ -45,6 +34,8 @@ class AnyPin(PinBase):
         * **typeChanged** : Fired when dataType has changed
 
     """
+    typeChanged = Signal(str)
+    dataTypeBeenSet = Signal()
 
     def __init__(self, name, owningNode, direction, **kwargs):
         """
@@ -56,8 +47,7 @@ class AnyPin(PinBase):
         :type direction: :py:class:`PyFlow.Core.Common.PinDirection`
         """
         super(AnyPin, self).__init__(name, owningNode, direction, **kwargs)
-        self.typeChanged = Signal(str)
-        self.dataTypeBeenSet = Signal()
+
         self.setDefaultValue(None)
         self._isAny = True
         # if True, setType and setDefault will work only once
@@ -500,7 +490,7 @@ class AnyPin(PinBase):
         self.jsonDecoderClass = otherClass.jsonDecoderClass
         self.supportedDataTypes = otherClass.supportedDataTypes
         self._supportedDataTypes = otherClass.supportedDataTypes()
-        self.typeChanged.send(self.activeDataType)
-        self.dataBeenSet.send(self)
+        self.typeChanged.emit(self.activeDataType)
+        self.dataBeenSet.emit(self)
 
         return True

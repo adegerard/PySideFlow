@@ -1,6 +1,6 @@
-from qtpy import QtCore
+from PySide6 import QtCore
 
-from qtpy.QtWidgets import *
+from PySide6.QtWidgets import *
 
 from PyFlow.UI.Utils.stylesheet import editableStyleSheet
 

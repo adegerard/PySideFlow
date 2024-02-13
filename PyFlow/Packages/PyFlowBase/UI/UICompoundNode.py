@@ -1,25 +1,10 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 import json
 import logging
 import os
 
-from qtpy.QtWidgets import QFileDialog
-from qtpy.QtWidgets import QInputDialog
-from qtpy.QtWidgets import QMessageBox
+from PySide6.QtWidgets import QFileDialog
+from PySide6.QtWidgets import QInputDialog
+from PySide6.QtWidgets import QMessageBox
 
 from PyFlow import GET_PACKAGE_PATH, GET_PACKAGES
 from PyFlow.UI.Canvas.UICommon import validateGraphDataPackages
@@ -30,8 +15,8 @@ from PyFlow.UI import RESOURCES_DIR
 from PyFlow.UI.Widgets.PropertiesFramework import CollapsibleFormWidget
 from PyFlow.Core.Common import *
 from PyFlow.UI.EditorHistory import EditorHistory
-
-
+from PyFlow.Core import graph_manager
+from PyFlow.UI import editor_history
 logger = logging.getLogger(None)
 
 
@@ -114,7 +99,7 @@ class UICompoundNode(UINodeBase):
             data["nodes"] = self.canvasRef().makeSerializedNodesUnique(data["nodes"])
             self._rawNode.rawGraph.populateFromJson(data)
             self.canvasRef().createWrappersForGraph(self._rawNode.rawGraph)
-            EditorHistory().saveState("Import compound", modify=True)
+            editor_history.saveState("Import compound", modify=True)
         else:
             logger.error("Missing dependencies! {0}".format(",".join(missedPackages)))
 
@@ -122,7 +107,7 @@ class UICompoundNode(UINodeBase):
         return self._rawNode.rawGraph
 
     def stepIn(self):
-        self._rawNode.graph().graphManager.selectGraph(self._rawNode.rawGraph)
+        graph_manager.selectGraph(self._rawNode.rawGraph)
 
     def mouseDoubleClickEvent(self, event):
         self.stepIn()

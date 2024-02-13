@@ -1,34 +1,19 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 from types import MethodType
 
-from qtpy.QtWidgets import QGraphicsTextItem
-from qtpy.QtWidgets import QGraphicsItem
-from qtpy.QtWidgets import QGraphicsWidget
-from qtpy.QtWidgets import QInputDialog
-from qtpy.QtWidgets import QGraphicsItemGroup
-from qtpy.QtWidgets import QGraphicsProxyWidget
-from qtpy.QtWidgets import QStyle
-from qtpy.QtWidgets import QLabel
-from qtpy.QtWidgets import QLineEdit
-from qtpy.QtWidgets import QTextBrowser
-from qtpy.QtWidgets import QPushButton
-from qtpy.QtWidgets import QMenu
-from qtpy import QtGui
-from qtpy import QtCore
+from PySide6.QtWidgets import QGraphicsTextItem
+from PySide6.QtWidgets import QGraphicsItem
+from PySide6.QtWidgets import QGraphicsWidget
+from PySide6.QtWidgets import QInputDialog
+from PySide6.QtWidgets import QGraphicsItemGroup
+from PySide6.QtWidgets import QGraphicsProxyWidget
+from PySide6.QtWidgets import QStyle
+from PySide6.QtWidgets import QLabel
+from PySide6.QtWidgets import QLineEdit
+from PySide6.QtWidgets import QTextBrowser
+from PySide6.QtWidgets import QPushButton
+from PySide6.QtWidgets import QMenu
+from PySide6 import QtGui
+from PySide6 import QtCore
 
 from PyFlow.UI.Canvas.UICommon import *
 from PyFlow.UI import RESOURCES_DIR

@@ -1,0 +1,870 @@
+{
+    "name": "root",
+    "category": "",
+    "vars": [],
+    "nodes": [
+        {
+            "package": "PyFlowBase",
+            "lib": "BoolLib",
+            "type": "boolAnd",
+            "owningGraphName": "root",
+            "name": "boolAnd",
+            "uuid": "1a35a535-9a74-46e2-a941-102febbe03e7",
+            "inputs": [
+                {
+                    "name": "a",
+                    "package": "PyFlowBase",
+                    "fullName": "boolAnd_a",
+                    "dataType": "BoolPin",
+                    "direction": 0,
+                    "value": "false",
+                    "uuid": "ccf4a10d-c73e-4e7a-a4e1-a34b602ecb7a",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolAnd1",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolAnd",
+                            "inPinId": 1,
+                            "lhsNodeUid": "ffeebe0f-531f-4654-978c-064b4d9c9a37",
+                            "rhsNodeUid": "1a35a535-9a74-46e2-a941-102febbe03e7"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                },
+                {
+                    "name": "b",
+                    "package": "PyFlowBase",
+                    "fullName": "boolAnd_b",
+                    "dataType": "BoolPin",
+                    "direction": 0,
+                    "value": "false",
+                    "uuid": "b1c0c0bb-6e10-44e8-9631-742bcf89f4f3",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolOr2",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolAnd",
+                            "inPinId": 2,
+                            "lhsNodeUid": "3aa7e49d-2738-4b6d-9fef-31c4976fa3c5",
+                            "rhsNodeUid": "1a35a535-9a74-46e2-a941-102febbe03e7"
+                        }
+                    ],
+                    "pinIndex": 2,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "package": "PyFlowBase",
+                    "fullName": "boolAnd_out",
+                    "dataType": "BoolPin",
+                    "direction": 1,
+                    "value": "false",
+                    "uuid": "e5ce70ee-1dcf-42ad-9d62-5919cfa6befa",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolAnd",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolXor",
+                            "inPinId": 1,
+                            "lhsNodeUid": "1a35a535-9a74-46e2-a941-102febbe03e7",
+                            "rhsNodeUid": "b87daa95-f001-4224-aa5a-a3aba73596e3"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "meta": {
+                "var": {},
+                "label": "boolAnd"
+            },
+            "wrapper": {
+                "collapsed": false,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">boolAnd</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                }
+            },
+            "x": -9.987693205340413,
+            "y": -190.12044260461093
+        },
+        {
+            "package": "PyFlowBase",
+            "lib": "BoolLib",
+            "type": "boolNor",
+            "owningGraphName": "root",
+            "name": "boolNor",
+            "uuid": "6f6338b8-cba9-419a-b562-4169015b0ce8",
+            "inputs": [
+                {
+                    "name": "a",
+                    "package": "PyFlowBase",
+                    "fullName": "boolNor_a",
+                    "dataType": "BoolPin",
+                    "direction": 0,
+                    "value": "false",
+                    "uuid": "18fa2ff1-c2b0-4856-896f-a836214a8e17",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolXor",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolNor",
+                            "inPinId": 1,
+                            "lhsNodeUid": "b87daa95-f001-4224-aa5a-a3aba73596e3",
+                            "rhsNodeUid": "6f6338b8-cba9-419a-b562-4169015b0ce8"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                },
+                {
+                    "name": "b",
+                    "package": "PyFlowBase",
+                    "fullName": "boolNor_b",
+                    "dataType": "BoolPin",
+                    "direction": 0,
+                    "value": "false",
+                    "uuid": "deae304f-9c84-4100-b269-497bffbdf7e5",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolOr",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolNor",
+                            "inPinId": 2,
+                            "lhsNodeUid": "fa1a2c47-ad38-4ba3-8e90-6b1589d971ec",
+                            "rhsNodeUid": "6f6338b8-cba9-419a-b562-4169015b0ce8"
+                        }
+                    ],
+                    "pinIndex": 2,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "package": "PyFlowBase",
+                    "fullName": "boolNor_out",
+                    "dataType": "BoolPin",
+                    "direction": 1,
+                    "value": "false",
+                    "uuid": "79862cce-bd66-41c4-9ba8-f0b066f50739",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolNor",
+                            "outPinId": 1,
+                            "rhsNodeName": "makeBool",
+                            "inPinId": 1,
+                            "lhsNodeUid": "6f6338b8-cba9-419a-b562-4169015b0ce8",
+                            "rhsNodeUid": "5c5b6329-ba89-4776-8839-2b19b0eac118"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "meta": {
+                "var": {},
+                "label": "boolNor"
+            },
+            "wrapper": {
+                "collapsed": false,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">boolNor</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                }
+            },
+            "x": 208.60007676879715,
+            "y": 62.25040438181347
+        },
+        {
+            "package": "PyFlowBase",
+            "lib": "BoolLib",
+            "type": "boolOr",
+            "owningGraphName": "root",
+            "name": "boolOr",
+            "uuid": "fa1a2c47-ad38-4ba3-8e90-6b1589d971ec",
+            "inputs": [
+                {
+                    "name": "a",
+                    "package": "PyFlowBase",
+                    "fullName": "boolOr_a",
+                    "dataType": "BoolPin",
+                    "direction": 0,
+                    "value": "false",
+                    "uuid": "ed807467-1211-4f89-8f6b-4ceba3af37de",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolOr2",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolOr",
+                            "inPinId": 1,
+                            "lhsNodeUid": "3aa7e49d-2738-4b6d-9fef-31c4976fa3c5",
+                            "rhsNodeUid": "fa1a2c47-ad38-4ba3-8e90-6b1589d971ec"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                },
+                {
+                    "name": "b",
+                    "package": "PyFlowBase",
+                    "fullName": "boolOr_b",
+                    "dataType": "BoolPin",
+                    "direction": 0,
+                    "value": "false",
+                    "uuid": "10d48f20-5bee-4bad-9a4e-5aa1d7b6723f",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolAnd1",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolOr",
+                            "inPinId": 2,
+                            "lhsNodeUid": "ffeebe0f-531f-4654-978c-064b4d9c9a37",
+                            "rhsNodeUid": "fa1a2c47-ad38-4ba3-8e90-6b1589d971ec"
+                        }
+                    ],
+                    "pinIndex": 2,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "package": "PyFlowBase",
+                    "fullName": "boolOr_out",
+                    "dataType": "BoolPin",
+                    "direction": 1,
+                    "value": "false",
+                    "uuid": "ef9cd8b9-9899-43a4-9f3a-bbb57426ac1f",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolOr",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolNor",
+                            "inPinId": 2,
+                            "lhsNodeUid": "fa1a2c47-ad38-4ba3-8e90-6b1589d971ec",
+                            "rhsNodeUid": "6f6338b8-cba9-419a-b562-4169015b0ce8"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "meta": {
+                "var": {},
+                "label": "boolOr"
+            },
+            "wrapper": {
+                "collapsed": false,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">boolOr</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                }
+            },
+            "x": -61.07667080010458,
+            "y": -97.13533507511293
+        },
+        {
+            "package": "PyFlowBase",
+            "lib": "BoolLib",
+            "type": "boolXor",
+            "owningGraphName": "root",
+            "name": "boolXor",
+            "uuid": "b87daa95-f001-4224-aa5a-a3aba73596e3",
+            "inputs": [
+                {
+                    "name": "a",
+                    "package": "PyFlowBase",
+                    "fullName": "boolXor_a",
+                    "dataType": "BoolPin",
+                    "direction": 0,
+                    "value": "false",
+                    "uuid": "eb046c6b-7c0f-487d-b5fa-03caafa6ed66",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolAnd",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolXor",
+                            "inPinId": 1,
+                            "lhsNodeUid": "1a35a535-9a74-46e2-a941-102febbe03e7",
+                            "rhsNodeUid": "b87daa95-f001-4224-aa5a-a3aba73596e3"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                },
+                {
+                    "name": "b",
+                    "package": "PyFlowBase",
+                    "fullName": "boolXor_b",
+                    "dataType": "BoolPin",
+                    "direction": 0,
+                    "value": "false",
+                    "uuid": "ad40ddb7-acaa-4c86-b9a7-4ded570e170e",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolAnd1",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolXor",
+                            "inPinId": 2,
+                            "lhsNodeUid": "ffeebe0f-531f-4654-978c-064b4d9c9a37",
+                            "rhsNodeUid": "b87daa95-f001-4224-aa5a-a3aba73596e3"
+                        }
+                    ],
+                    "pinIndex": 2,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "package": "PyFlowBase",
+                    "fullName": "boolXor_out",
+                    "dataType": "BoolPin",
+                    "direction": 1,
+                    "value": "false",
+                    "uuid": "6a73b05b-d9f3-42d1-afe4-f3779ca72b87",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolXor",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolNor",
+                            "inPinId": 1,
+                            "lhsNodeUid": "b87daa95-f001-4224-aa5a-a3aba73596e3",
+                            "rhsNodeUid": "6f6338b8-cba9-419a-b562-4169015b0ce8"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "meta": {
+                "var": {},
+                "label": "boolXor"
+            },
+            "wrapper": {
+                "collapsed": false,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">boolXor</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                }
+            },
+            "x": 102.84829089743394,
+            "y": -193.85673346894148
+        },
+        {
+            "package": "PyFlowBase",
+            "lib": "BoolLib",
+            "type": "boolAnd",
+            "owningGraphName": "root",
+            "name": "boolAnd1",
+            "uuid": "ffeebe0f-531f-4654-978c-064b4d9c9a37",
+            "inputs": [
+                {
+                    "name": "b",
+                    "package": "PyFlowBase",
+                    "fullName": "boolAnd1_b",
+                    "dataType": "BoolPin",
+                    "direction": 0,
+                    "value": "false",
+                    "uuid": "dece72dd-6bf2-4e3f-8c83-71fb92f4f15f",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "makeBool3",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolAnd1",
+                            "inPinId": 2,
+                            "lhsNodeUid": "f22ab41f-3ad5-46df-ada2-a408b504ed4f",
+                            "rhsNodeUid": "ffeebe0f-531f-4654-978c-064b4d9c9a37"
+                        }
+                    ],
+                    "pinIndex": 2,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                },
+                {
+                    "name": "a",
+                    "package": "PyFlowBase",
+                    "fullName": "boolAnd1_a",
+                    "dataType": "BoolPin",
+                    "direction": 0,
+                    "value": "false",
+                    "uuid": "3abe6a2c-3342-43e7-890f-01c4f404502f",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "makeBool3",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolAnd1",
+                            "inPinId": 1,
+                            "lhsNodeUid": "f22ab41f-3ad5-46df-ada2-a408b504ed4f",
+                            "rhsNodeUid": "ffeebe0f-531f-4654-978c-064b4d9c9a37"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "package": "PyFlowBase",
+                    "fullName": "boolAnd1_out",
+                    "dataType": "BoolPin",
+                    "direction": 1,
+                    "value": "false",
+                    "uuid": "b9e0f9a4-16e7-4e36-98fd-a75422e5621f",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolAnd1",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolAnd",
+                            "inPinId": 1,
+                            "lhsNodeUid": "ffeebe0f-531f-4654-978c-064b4d9c9a37",
+                            "rhsNodeUid": "1a35a535-9a74-46e2-a941-102febbe03e7"
+                        },
+                        {
+                            "lhsNodeName": "boolAnd1",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolXor",
+                            "inPinId": 2,
+                            "lhsNodeUid": "ffeebe0f-531f-4654-978c-064b4d9c9a37",
+                            "rhsNodeUid": "b87daa95-f001-4224-aa5a-a3aba73596e3"
+                        },
+                        {
+                            "lhsNodeName": "boolAnd1",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolOr",
+                            "inPinId": 2,
+                            "lhsNodeUid": "ffeebe0f-531f-4654-978c-064b4d9c9a37",
+                            "rhsNodeUid": "fa1a2c47-ad38-4ba3-8e90-6b1589d971ec"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "meta": {
+                "var": {},
+                "label": "boolAnd1"
+            },
+            "wrapper": {
+                "collapsed": false,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">boolAnd1</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                }
+            },
+            "x": -277.4635893433695,
+            "y": -14.42871249451748
+        },
+        {
+            "package": "PyFlowBase",
+            "lib": "BoolLib",
+            "type": "boolOr",
+            "owningGraphName": "root",
+            "name": "boolOr2",
+            "uuid": "3aa7e49d-2738-4b6d-9fef-31c4976fa3c5",
+            "inputs": [
+                {
+                    "name": "a",
+                    "package": "PyFlowBase",
+                    "fullName": "boolOr2_a",
+                    "dataType": "BoolPin",
+                    "direction": 0,
+                    "value": "false",
+                    "uuid": "cb26395f-ad4a-40da-8dd1-3acc261c1eaf",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "makeBool3",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolOr2",
+                            "inPinId": 1,
+                            "lhsNodeUid": "f22ab41f-3ad5-46df-ada2-a408b504ed4f",
+                            "rhsNodeUid": "3aa7e49d-2738-4b6d-9fef-31c4976fa3c5"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                },
+                {
+                    "name": "b",
+                    "package": "PyFlowBase",
+                    "fullName": "boolOr2_b",
+                    "dataType": "BoolPin",
+                    "direction": 0,
+                    "value": "false",
+                    "uuid": "ac58347a-5868-404d-abed-8f5aff1b6b3b",
+                    "linkedTo": [],
+                    "pinIndex": 2,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "package": "PyFlowBase",
+                    "fullName": "boolOr2_out",
+                    "dataType": "BoolPin",
+                    "direction": 1,
+                    "value": "false",
+                    "uuid": "5e00b189-71aa-4fc9-a191-0c82740b2c51",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolOr2",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolOr",
+                            "inPinId": 1,
+                            "lhsNodeUid": "3aa7e49d-2738-4b6d-9fef-31c4976fa3c5",
+                            "rhsNodeUid": "fa1a2c47-ad38-4ba3-8e90-6b1589d971ec"
+                        },
+                        {
+                            "lhsNodeName": "boolOr2",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolAnd",
+                            "inPinId": 2,
+                            "lhsNodeUid": "3aa7e49d-2738-4b6d-9fef-31c4976fa3c5",
+                            "rhsNodeUid": "1a35a535-9a74-46e2-a941-102febbe03e7"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "meta": {
+                "var": {},
+                "label": "boolOr2"
+            },
+            "wrapper": {
+                "collapsed": false,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">boolOr2</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                }
+            },
+            "x": -274.4745566519053,
+            "y": -107.83598410277459
+        },
+        {
+            "package": "PyFlowBase",
+            "lib": "DefaultLib",
+            "type": "makeBool",
+            "owningGraphName": "root",
+            "name": "makeBool",
+            "uuid": "5c5b6329-ba89-4776-8839-2b19b0eac118",
+            "inputs": [
+                {
+                    "name": "b",
+                    "package": "PyFlowBase",
+                    "fullName": "makeBool_b",
+                    "dataType": "BoolPin",
+                    "direction": 0,
+                    "value": "false",
+                    "uuid": "afa6bc9c-1bac-48de-9608-c75a8d4dce4c",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "boolNor",
+                            "outPinId": 1,
+                            "rhsNodeName": "makeBool",
+                            "inPinId": 1,
+                            "lhsNodeUid": "6f6338b8-cba9-419a-b562-4169015b0ce8",
+                            "rhsNodeUid": "5c5b6329-ba89-4776-8839-2b19b0eac118"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "package": "PyFlowBase",
+                    "fullName": "makeBool_out",
+                    "dataType": "BoolPin",
+                    "direction": 1,
+                    "value": "false",
+                    "uuid": "3ed4e53a-07a7-467a-a081-2cfc6d2cbc18",
+                    "linkedTo": [],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "meta": {
+                "var": {},
+                "label": "makeBool"
+            },
+            "wrapper": {
+                "collapsed": false,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">makeBool</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                }
+            },
+            "x": 348.91537881473823,
+            "y": -116.11398561253833
+        },
+        {
+            "package": "PyFlowBase",
+            "lib": "DefaultLib",
+            "type": "makeBool",
+            "owningGraphName": "root",
+            "name": "makeBool3",
+            "uuid": "f22ab41f-3ad5-46df-ada2-a408b504ed4f",
+            "inputs": [
+                {
+                    "name": "b",
+                    "package": "PyFlowBase",
+                    "fullName": "makeBool3_b",
+                    "dataType": "BoolPin",
+                    "direction": 0,
+                    "value": "false",
+                    "uuid": "b64e0879-1bb9-400c-80ab-5a72fd24c85f",
+                    "linkedTo": [],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "package": "PyFlowBase",
+                    "fullName": "makeBool3_out",
+                    "dataType": "BoolPin",
+                    "direction": 1,
+                    "value": "false",
+                    "uuid": "08422eb7-b7f7-4ea1-977e-5b7045f523ee",
+                    "linkedTo": [
+                        {
+                            "lhsNodeName": "makeBool3",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolOr2",
+                            "inPinId": 1,
+                            "lhsNodeUid": "f22ab41f-3ad5-46df-ada2-a408b504ed4f",
+                            "rhsNodeUid": "3aa7e49d-2738-4b6d-9fef-31c4976fa3c5"
+                        },
+                        {
+                            "lhsNodeName": "makeBool3",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolAnd1",
+                            "inPinId": 2,
+                            "lhsNodeUid": "f22ab41f-3ad5-46df-ada2-a408b504ed4f",
+                            "rhsNodeUid": "ffeebe0f-531f-4654-978c-064b4d9c9a37"
+                        },
+                        {
+                            "lhsNodeName": "makeBool3",
+                            "outPinId": 1,
+                            "rhsNodeName": "boolAnd1",
+                            "inPinId": 1,
+                            "lhsNodeUid": "f22ab41f-3ad5-46df-ada2-a408b504ed4f",
+                            "rhsNodeUid": "ffeebe0f-531f-4654-978c-064b4d9c9a37"
+                        }
+                    ],
+                    "pinIndex": 1,
+                    "options": [
+                        256
+                    ],
+                    "structure": 0,
+                    "alwaysList": false,
+                    "alwaysSingle": false,
+                    "alwaysDict": false
+                }
+            ],
+            "meta": {
+                "var": {},
+                "label": "makeBool3"
+            },
+            "wrapper": {
+                "collapsed": false,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">makeBool3</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                }
+            },
+            "x": -419.2118349778579,
+            "y": -100.13259516405155
+        },
+        {
+            "package": "PyFlowBase",
+            "lib": null,
+            "type": "commentNode",
+            "owningGraphName": "root",
+            "name": "fgfgcommentNode5",
+            "uuid": "4a69b045-f6bd-401e-9766-5e5479a08054",
+            "inputs": [],
+            "outputs": [],
+            "meta": {
+                "var": {},
+                "label": "fgfgcommentNode5"
+            },
+            "wrapper": {
+                "resize": {
+                    "w": 364.5365519024949,
+                    "h": 247.68959554252336
+                },
+                "collapsed": true,
+                "headerHtml": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\nhr { height: 1px; border-width: 0; }\nli.unchecked::marker { content: \"\\2610\"; }\nli.checked::marker { content: \"\\2612\"; }\n</style></head><body style=\" font-family:'Consolas'; font-size:6pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">fgfgcommentNode5</p></body></html>",
+                "exposeInputsToCompound": false,
+                "groups": {
+                    "input": {},
+                    "output": {}
+                },
+                "owningNodes": [
+                    "boolAnd",
+                    "boolXor",
+                    "boolOr"
+                ],
+                "color": 1030512249
+            },
+            "x": -119.38694710910087,
+            "y": -263.1368343057591
+        }
+    ],
+    "depth": 1,
+    "isRoot": true,
+    "parentGraphName": "None",
+    "fileVersion": "2.0.1",
+    "activeGraph": "root"
+}

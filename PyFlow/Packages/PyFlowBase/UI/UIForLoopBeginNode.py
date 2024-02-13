@@ -13,16 +13,16 @@
 ## limitations under the License.
 
 import uuid
-from qtpy import QtGui
-from qtpy import QtCore
-from qtpy.QtWidgets import *
+from PySide6 import QtGui
+from PySide6 import QtCore
+from PySide6.QtWidgets import *
 from PyFlow.Core.Common import *
 from PyFlow.Core.NodeBase import NodeBase
 from PyFlow.UI.Utils.stylesheet import Colors
 from PyFlow.UI.Canvas.Painters import NodePainter
 from PyFlow.UI.Canvas.UINodeBase import UINodeBase
 from PyFlow.UI.Canvas.IConvexHullBackDrop import IConvexHullBackDrop
-
+from PyFlow.Core import graph_manager
 
 class UIForLoopBeginNode(UINodeBase, IConvexHullBackDrop):
     def __init__(self, raw_node):
@@ -41,7 +41,7 @@ class UIForLoopBeginNode(UINodeBase, IConvexHullBackDrop):
         nodeTemplate["package"] = "PyFlowBase"
         nodeTemplate["lib"] = ""
         nodeTemplate["type"] = "loopEnd"
-        nodeTemplate["name"] = self.canvasRef().graphManager.getUniqNodeName("loopEnd")
+        nodeTemplate["name"] = graph_manager.getUniqNodeName("loopEnd")
         nodeTemplate["x"] = self.scenePos().x() + self.geometry().width() + 30
         nodeTemplate["y"] = self.scenePos().y()
         nodeTemplate["uuid"] = str(uuid.uuid4())

@@ -1,31 +1,16 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 import json
 
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy.QtWidgets import QWidget
-from qtpy.QtWidgets import QLineEdit
-from qtpy.QtWidgets import QComboBox
-from qtpy.QtWidgets import QHBoxLayout
-from qtpy.QtWidgets import QLabel
-from qtpy.QtWidgets import QSpacerItem
-from qtpy.QtWidgets import QSizePolicy
-from qtpy.QtWidgets import QPushButton
-from qtpy.QtWidgets import QInputDialog
+from PySide6 import QtCore
+from PySide6 import QtGui
+from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QLineEdit
+from PySide6.QtWidgets import QComboBox
+from PySide6.QtWidgets import QHBoxLayout
+from PySide6.QtWidgets import QLabel
+from PySide6.QtWidgets import QSpacerItem
+from PySide6.QtWidgets import QSizePolicy
+from PySide6.QtWidgets import QPushButton
+from PySide6.QtWidgets import QInputDialog
 
 from PyFlow import getHashableDataTypes
 from PyFlow.Core.Common import *
@@ -76,7 +61,7 @@ class TypeWidget(QWidget):
             cellH = size / gridSize
 
             painter.setBrush(QtGui.QBrush(keyColor))
-            painter.setPen(QtGui.QPen(QtCore.Qt.black, 0.2))
+            painter.setPen(QtGui.QPen(Qt.black, 0.2))
             for row in range(gridSize):
                 for column in range(gridSize):
                     x = row * cellW
@@ -99,7 +84,7 @@ class TypeWidget(QWidget):
             cellH = size / gridSize
 
             painter.setBrush(QtGui.QBrush(keyColor))
-            painter.setPen(QtGui.QPen(QtCore.Qt.black, 0.2))
+            painter.setPen(QtGui.QPen(Qt.black, 0.2))
             for row in range(gridSize):
                 painter.setBrush(keyColor)
                 painter.drawRect(0, row * cellH, cellW, cellH)
@@ -153,13 +138,13 @@ class UIVariable(QWidget, IPropertiesViewSupport):
         self.variablesWidget.pyFlowInstance.onRequestFillProperties(
             self.createPropertiesWidget
         )
-        EditorHistory().saveState("Change variable struct", modify=True)
+        editor_history.saveState("Change variable struct", modify=True)
         self.widget.update()
 
     def setDataType(self, dataType):
         self.dataType = dataType
         self._rawVariable.dataType = dataType
-        EditorHistory().saveState("Change variable data type", modify=True)
+        editor_history.saveState("Change variable data type", modify=True)
 
     def onDictKeyTypeChanged(self, newType):
         dictObject = self._rawVariable.value
@@ -263,7 +248,7 @@ class UIVariable(QWidget, IPropertiesViewSupport):
 
         def accessLevelChanged(x):
             self._rawVariable.accessLevel = AccessLevel[x]
-            EditorHistory().saveState("Change variable access level", modify=True)
+            editor_history.saveState("Change variable access level", modify=True)
 
         cb.currentTextChanged.connect(accessLevelChanged)
         cb.setCurrentIndex(self._rawVariable.accessLevel)

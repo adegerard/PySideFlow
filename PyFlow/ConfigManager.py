@@ -1,22 +1,10 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 import os
 import json
 
-from qtpy import QtCore, QtGui
+from PySide6 import QtCore
+from PySide6.QtCore import (
+    Qt
+)
 
 from PyFlow.Core.Common import *
 from PyFlow.Input import InputAction, InputManager, InputActionType
@@ -83,7 +71,7 @@ class ConfigManager(object):
                 name="Canvas.Pan",
                 actionType=InputActionType.Mouse,
                 group="Navigation",
-                mouse=QtCore.Qt.MouseButton.MiddleButton,
+                mouse=Qt.MouseButton.MiddleButton,
             )
         )
         InputManager().registerAction(
@@ -91,8 +79,8 @@ class ConfigManager(object):
                 name="Canvas.Pan",
                 actionType=InputActionType.Mouse,
                 group="Navigation",
-                mouse=QtCore.Qt.MouseButton.LeftButton,
-                modifiers=QtCore.Qt.AltModifier,
+                mouse=Qt.MouseButton.LeftButton,
+                modifiers=Qt.AltModifier,
             )
         )
         InputManager().registerAction(
@@ -100,7 +88,7 @@ class ConfigManager(object):
                 name="Canvas.Zoom",
                 actionType=InputActionType.Mouse,
                 group="Navigation",
-                mouse=QtCore.Qt.MouseButton.RightButton,
+                mouse=Qt.MouseButton.RightButton,
             )
         )
         InputManager().registerAction(
@@ -108,7 +96,7 @@ class ConfigManager(object):
                 name="Canvas.FrameSelected",
                 actionType=InputActionType.Keyboard,
                 group="Navigation",
-                key=QtCore.Qt.Key_F,
+                key=Qt.Key_F,
             )
         )
         InputManager().registerAction(
@@ -116,7 +104,7 @@ class ConfigManager(object):
                 name="Canvas.FrameAll",
                 actionType=InputActionType.Keyboard,
                 group="Navigation",
-                key=QtCore.Qt.Key_H,
+                key=Qt.Key_H,
             )
         )
         InputManager().registerAction(
@@ -124,8 +112,8 @@ class ConfigManager(object):
                 name="Canvas.ZoomIn",
                 actionType=InputActionType.Keyboard,
                 group="Navigation",
-                key=QtCore.Qt.Key_Equal,
-                modifiers=QtCore.Qt.ControlModifier,
+                key=Qt.Key_Equal,
+                modifiers=Qt.ControlModifier,
             )
         )
         InputManager().registerAction(
@@ -133,8 +121,8 @@ class ConfigManager(object):
                 name="Canvas.ZoomOut",
                 actionType=InputActionType.Keyboard,
                 group="Navigation",
-                key=QtCore.Qt.Key_Minus,
-                modifiers=QtCore.Qt.ControlModifier,
+                key=Qt.Key_Minus,
+                modifiers=Qt.ControlModifier,
             )
         )
         InputManager().registerAction(
@@ -142,8 +130,8 @@ class ConfigManager(object):
                 name="Canvas.ResetScale",
                 actionType=InputActionType.Keyboard,
                 group="Navigation",
-                key=QtCore.Qt.Key_R,
-                modifiers=QtCore.Qt.ControlModifier,
+                key=Qt.Key_R,
+                modifiers=Qt.ControlModifier,
             )
         )
 
@@ -152,8 +140,8 @@ class ConfigManager(object):
                 name="Canvas.AlignLeft",
                 actionType=InputActionType.Keyboard,
                 group="Refactoring",
-                modifiers=QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier,
-                key=QtCore.Qt.Key_Left,
+                modifiers=Qt.ControlModifier | Qt.ShiftModifier,
+                key=Qt.Key_Left,
             )
         )
         InputManager().registerAction(
@@ -161,8 +149,8 @@ class ConfigManager(object):
                 name="Canvas.AlignTop",
                 actionType=InputActionType.Keyboard,
                 group="Refactoring",
-                modifiers=QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier,
-                key=QtCore.Qt.Key_Up,
+                modifiers=Qt.ControlModifier | Qt.ShiftModifier,
+                key=Qt.Key_Up,
             )
         )
         InputManager().registerAction(
@@ -170,8 +158,8 @@ class ConfigManager(object):
                 name="Canvas.AlignRight",
                 actionType=InputActionType.Keyboard,
                 group="Refactoring",
-                modifiers=QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier,
-                key=QtCore.Qt.Key_Right,
+                modifiers=Qt.ControlModifier | Qt.ShiftModifier,
+                key=Qt.Key_Right,
             )
         )
         InputManager().registerAction(
@@ -179,8 +167,8 @@ class ConfigManager(object):
                 name="Canvas.AlignBottom",
                 actionType=InputActionType.Keyboard,
                 group="Refactoring",
-                modifiers=QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier,
-                key=QtCore.Qt.Key_Down,
+                modifiers=Qt.ControlModifier | Qt.ShiftModifier,
+                key=Qt.Key_Down,
             )
         )
 
@@ -189,8 +177,8 @@ class ConfigManager(object):
                 name="Canvas.Undo",
                 actionType=InputActionType.Keyboard,
                 group="Editing",
-                modifiers=QtCore.Qt.ControlModifier,
-                key=QtCore.Qt.Key_Z,
+                modifiers=Qt.ControlModifier,
+                key=Qt.Key_Z,
             )
         )
         InputManager().registerAction(
@@ -198,8 +186,8 @@ class ConfigManager(object):
                 name="Canvas.Redo",
                 actionType=InputActionType.Keyboard,
                 group="Editing",
-                modifiers=QtCore.Qt.ControlModifier,
-                key=QtCore.Qt.Key_Y,
+                modifiers=Qt.ControlModifier,
+                key=Qt.Key_Y,
             )
         )
         InputManager().registerAction(
@@ -207,7 +195,7 @@ class ConfigManager(object):
                 name="Canvas.KillSelected",
                 actionType=InputActionType.Keyboard,
                 group="Editing",
-                key=QtCore.Qt.Key_Delete,
+                key=Qt.Key_Delete,
             )
         )
         InputManager().registerAction(
@@ -215,8 +203,8 @@ class ConfigManager(object):
                 name="Canvas.CopyNodes",
                 actionType=InputActionType.Keyboard,
                 group="Editing",
-                key=QtCore.Qt.Key_C,
-                modifiers=QtCore.Qt.ControlModifier,
+                key=Qt.Key_C,
+                modifiers=Qt.ControlModifier,
             )
         )
         InputManager().registerAction(
@@ -224,8 +212,8 @@ class ConfigManager(object):
                 name="Canvas.CutNodes",
                 actionType=InputActionType.Keyboard,
                 group="Editing",
-                key=QtCore.Qt.Key_X,
-                modifiers=QtCore.Qt.ControlModifier,
+                key=Qt.Key_X,
+                modifiers=Qt.ControlModifier,
             )
         )
         InputManager().registerAction(
@@ -233,8 +221,8 @@ class ConfigManager(object):
                 name="Canvas.DragCopyNodes",
                 actionType=InputActionType.Mouse,
                 group="Editing",
-                mouse=QtCore.Qt.MouseButton.LeftButton,
-                modifiers=QtCore.Qt.AltModifier,
+                mouse=Qt.MouseButton.LeftButton,
+                modifiers=Qt.AltModifier,
             )
         )
         InputManager().registerAction(
@@ -242,8 +230,8 @@ class ConfigManager(object):
                 name="Canvas.DragCopyNodes",
                 actionType=InputActionType.Mouse,
                 group="Editing",
-                mouse=QtCore.Qt.MouseButton.MiddleButton,
-                modifiers=QtCore.Qt.AltModifier,
+                mouse=Qt.MouseButton.MiddleButton,
+                modifiers=Qt.AltModifier,
             )
         )
         InputManager().registerAction(
@@ -251,7 +239,7 @@ class ConfigManager(object):
                 name="Canvas.DragNodes",
                 actionType=InputActionType.Mouse,
                 group="Editing",
-                mouse=QtCore.Qt.MouseButton.MiddleButton,
+                mouse=Qt.MouseButton.MiddleButton,
             )
         )
         InputManager().registerAction(
@@ -259,7 +247,7 @@ class ConfigManager(object):
                 name="Canvas.DragNodes",
                 actionType=InputActionType.Mouse,
                 group="Editing",
-                mouse=QtCore.Qt.MouseButton.LeftButton,
+                mouse=Qt.MouseButton.LeftButton,
             )
         )
         InputManager().registerAction(
@@ -267,7 +255,7 @@ class ConfigManager(object):
                 name="Canvas.DragChainedNodes",
                 actionType=InputActionType.Mouse,
                 group="Editing",
-                mouse=QtCore.Qt.MouseButton.MiddleButton,
+                mouse=Qt.MouseButton.MiddleButton,
             )
         )
         InputManager().registerAction(
@@ -275,8 +263,8 @@ class ConfigManager(object):
                 name="Canvas.PasteNodes",
                 actionType=InputActionType.Keyboard,
                 group="Editing",
-                key=QtCore.Qt.Key_V,
-                modifiers=QtCore.Qt.ControlModifier,
+                key=Qt.Key_V,
+                modifiers=Qt.ControlModifier,
             )
         )
         InputManager().registerAction(
@@ -284,8 +272,8 @@ class ConfigManager(object):
                 name="Canvas.DuplicateNodes",
                 actionType=InputActionType.Keyboard,
                 group="Editing",
-                key=QtCore.Qt.Key_D,
-                modifiers=QtCore.Qt.ControlModifier,
+                key=Qt.Key_D,
+                modifiers=Qt.ControlModifier,
             )
         )
         InputManager().registerAction(
@@ -293,8 +281,8 @@ class ConfigManager(object):
                 name="Canvas.DisconnectPin",
                 actionType=InputActionType.Mouse,
                 group="Editing",
-                mouse=QtCore.Qt.MouseButton.LeftButton,
-                modifiers=QtCore.Qt.AltModifier,
+                mouse=Qt.MouseButton.LeftButton,
+                modifiers=Qt.AltModifier,
             )
         )
 
@@ -303,8 +291,8 @@ class ConfigManager(object):
                 name="App.NewFile",
                 actionType=InputActionType.Keyboard,
                 group="IO",
-                key=QtCore.Qt.Key_N,
-                modifiers=QtCore.Qt.ControlModifier,
+                key=Qt.Key_N,
+                modifiers=Qt.ControlModifier,
             )
         )
         InputManager().registerAction(
@@ -312,8 +300,8 @@ class ConfigManager(object):
                 name="App.Save",
                 actionType=InputActionType.Keyboard,
                 group="IO",
-                key=QtCore.Qt.Key_S,
-                modifiers=QtCore.Qt.ControlModifier,
+                key=Qt.Key_S,
+                modifiers=Qt.ControlModifier,
             )
         )
         InputManager().registerAction(
@@ -321,8 +309,8 @@ class ConfigManager(object):
                 name="App.SaveAs",
                 actionType=InputActionType.Keyboard,
                 group="IO",
-                key=QtCore.Qt.Key_S,
-                modifiers=QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier,
+                key=Qt.Key_S,
+                modifiers=Qt.ControlModifier | Qt.ShiftModifier,
             )
         )
         InputManager().registerAction(
@@ -330,7 +318,7 @@ class ConfigManager(object):
                 name="App.Load",
                 actionType=InputActionType.Keyboard,
                 group="IO",
-                key=QtCore.Qt.Key_O,
-                modifiers=QtCore.Qt.ControlModifier,
+                key=Qt.Key_O,
+                modifiers=Qt.ControlModifier,
             )
         )

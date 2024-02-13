@@ -6,12 +6,12 @@ from ProjectManager.Packages.ProgramBase.Database.dbFormBuilder import *
 import re
 import sys
 
-from qtpy import QtGui
-from qtpy import QtCore
-from qtpy.QtWidgets import *
+from PySide6 import QtGui
+from PySide6 import QtCore
+from PySide6.QtWidgets import *
 import os
 
-from qtpy import QtUiTools
+from PySide6 import QtUiTools
 
 from ProjectManager import Packages
 basePackagePath = os.path.dirname(os.path.abspath(__file__))
@@ -958,11 +958,11 @@ class FormBuilder(QMdiSubWindow):
         importDict["sys"] = "import sys"
         importDict["os"] = "import os"
 
-        importDict["QtGui"] = "from qtpy import QtGui"
-        importDict["QtCore"]= "from qtpy import QtCore"
-        importDict["QtWidgets"] = "from qtpy.QtWidgets import *"
+        importDict["QtGui"] = "from PySide6 import QtGui"
+        importDict["QtCore"]= "from PySide6 import QtCore"
+        importDict["QtWidgets"] = "from PySide6.QtWidgets import *"
 
-        importDict["QtUiTools"] = "from qtpy import QtUiTools"
+        importDict["QtUiTools"] = "from PySide6 import QtUiTools"
         importDict["qtalchemy"] = "from qtalchemyPySide import *"
 
         importDict["uiFile"] = "uiFile = os.path.join(basePackagePath, %s)" % (formfileName)

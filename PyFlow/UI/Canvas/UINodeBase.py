@@ -1,28 +1,18 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 import logging
 import uuid
-from qtpy import QtCore
-from qtpy import QtGui
-from qtpy import QtSvg
-from qtpy.QtWidgets import *
-from qtpy.QtSvgWidgets import QGraphicsSvgItem
-
+from PySide6 import QtCore
+from PySide6 import QtGui
+from PySide6 import QtSvg
+from PySide6.QtWidgets import *
+from PySide6.QtSvgWidgets import QGraphicsSvgItem
+from PySide6.QtCore import (
+    Qt,
+    Signal,
+)
 from PyFlow.ConfigManager import ConfigManager
 from PyFlow.Core.Common import *
+from PyFlow.Core import graph_manager
+
 from PyFlow.UI.Canvas.UIPinBase import UIPinBase, getUIPinInstance, PinGroup
 from PyFlow.UI.EditorHistory import EditorHistory
 from PyFlow.UI.Canvas.UICommon import *
@@ -33,8 +23,10 @@ from PyFlow.UI.UIInterfaces import IPropertiesViewSupport
 from PyFlow.UI.UIInterfaces import IUINode
 from PyFlow.UI.Canvas.NodeActionButton import NodeActionButtonBase
 from PyFlow.UI.Utils.stylesheet import Colors
+from PyFlow.UI import editor_history
 
 from collections import OrderedDict
+from PyFlow.Core import graph_manager
 
 UI_NODES_FACTORIES = {}
 
@@ -64,8 +56,8 @@ class NodeNameValidator(QtGui.QRegularExpressionValidator):
 
 
 class InputTextField(QGraphicsTextItem):
-    editingFinished = QtCore.Signal(bool)
-    startEditing = QtCore.Signal()
+    editingFinished = Signal(bool)
+    startEditing = Signal()
 
     def __init__(self, text, node, parent=None, singleLine=False, validator=None):
         super(InputTextField, self).__init__(text, parent)
@@ -90,11 +82,11 @@ class InputTextField(QGraphicsTextItem):
             cursor.insertText(keyButtonText)
             futureText = doc.toPlainText()
             validatorState, chunk, pos = self.validator.validate(futureText, 0)
-            if currentKey not in (QtCore.Qt.Key_Backspace, QtCore.Qt.Key_Delete):
+            if currentKey not in (Qt.Key_Backspace, Qt.Key_Delete):
                 if validatorState == QtGui.QValidator.Invalid:
                     return
 
-        if currentKey == QtCore.Qt.Key_Escape:
+        if currentKey == Qt.Key_Escape:
             # user rejects action. Restore text before editing
             self.setPlainText(self.textBeforeEditing)
             self.clearFocus()
@@ -102,7 +94,7 @@ class InputTextField(QGraphicsTextItem):
             return
 
         if self.singleLine:
-            if currentKey in (QtCore.Qt.Key_Return, QtCore.Qt.Key_Enter):
+            if currentKey in (Qt.Key_Return, Qt.Key_Enter):
                 if self.toPlainText() == "":
                     self.setPlainText(self.textBeforeEditing)
                     event.ignore()
@@ -139,7 +131,7 @@ class InputTextField(QGraphicsTextItem):
 
     def focusInEvent(self, event):
         self.node.canvasRef().disableShortcuts()
-        self.setTextInteractionFlags(QtCore.Qt.TextEditorInteraction)
+        self.setTextInteractionFlags(Qt.TextEditorInteraction)
         self.setObjectName("MouseLocked")
         self.textBeforeEditing = self.toPlainText()
         self.mouseMoveEvent = self.origMoveEvent
@@ -151,7 +143,7 @@ class InputTextField(QGraphicsTextItem):
         cursor.clearSelection()
         self.setTextCursor(cursor)
         super(InputTextField, self).focusOutEvent(event)
-        self.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
+        self.setTextInteractionFlags(Qt.NoTextInteraction)
         self.setFlag(QGraphicsWidget.ItemIsFocusable, False)
         self.setObjectName("Nothing")
         if self.toPlainText() == "" and self.validator is not None:
@@ -253,7 +245,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
     """
 
     # Event called when node name changes
-    displayNameChanged = QtCore.Signal(str)
+    displayNameChanged = Signal(str)
     drawlabel = None
 
     def __init__(
@@ -265,7 +257,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
         self.setFlag(QGraphicsWidget.ItemIsSelectable)
         self.setFlag(QGraphicsWidget.ItemSendsGeometryChanges)
         self.setCacheMode(QGraphicsItem.DeviceCoordinateCache)
-        self.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptHoverEvents(True)
         self.setZValue(NodeDefaults().Z_LAYER)
 
@@ -289,8 +281,8 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
         # Color and Size Options
         self.opt_node_base_color = Colors.NodeBackgrounds
         self.opt_selected_pen_color = Colors.NodeSelectedPenColor
-        self.optPenSelectedType = QtCore.Qt.SolidLine
-        self.optPenErrorType = QtCore.Qt.DashLine
+        self.optPenSelectedType = Qt.SolidLine
+        self.optPenErrorType = Qt.DashLine
         self._collapsed = False
         self._left_stretch = 0
         self.color = color
@@ -304,7 +296,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
         self.h = 30
         self.minWidth = 50
         self.minHeight = self.h
-        self._labelTextColor = QtCore.Qt.white
+        self._labelTextColor = Qt.white
 
         # Font Options
         self.nodeNameFont = QtGui.QFont("Consolas")
@@ -312,7 +304,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
 
         # GUI Layout
         self.drawLayoutsDebug = False
-        self.nodeLayout = QGraphicsLinearLayout(QtCore.Qt.Vertical)
+        self.nodeLayout = QGraphicsLinearLayout(Qt.Vertical)
         self.nodeLayout.setContentsMargins(
             NodeDefaults().CONTENT_MARGINS,
             NodeDefaults().CONTENT_MARGINS,
@@ -321,7 +313,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
         )
         self.nodeLayout.setSpacing(NodeDefaults().LAYOUTS_SPACING)
 
-        self.headerLayout = QGraphicsLinearLayout(QtCore.Qt.Horizontal)
+        self.headerLayout = QGraphicsLinearLayout(Qt.Horizontal)
 
         self.nodeNameWidget = NodeName(self)
         if self.drawlabel:
@@ -334,7 +326,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
         self.headerLayout.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.headerLayout.setMaximumHeight(self.labelHeight)
 
-        self.exposedActionButtonsLayout = QGraphicsLinearLayout(QtCore.Qt.Horizontal)
+        self.exposedActionButtonsLayout = QGraphicsLinearLayout(Qt.Horizontal)
         self.exposedActionButtonsLayout.setContentsMargins(0, 0, 0, 0)
         self.exposedActionButtonsLayout.setSpacing(2)
         self.exposedActionButtonsLayout.setSizePolicy(
@@ -342,34 +334,34 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
         )
         self.headerLayout.addItem(self.exposedActionButtonsLayout)
         self.headerLayout.setAlignment(
-            self.exposedActionButtonsLayout, QtCore.Qt.AlignRight
+            self.exposedActionButtonsLayout, Qt.AlignRight
         )
 
-        self.customLayout = QGraphicsLinearLayout(QtCore.Qt.Vertical)
+        self.customLayout = QGraphicsLinearLayout(Qt.Vertical)
         self.customLayout.setContentsMargins(0, 0, 0, 0)
         self.customLayout.setSpacing(NodeDefaults().LAYOUTS_SPACING)
         self.customLayout.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
         self.hasCustomLayout = False
 
-        self.pinsLayout = QGraphicsLinearLayout(QtCore.Qt.Horizontal)
+        self.pinsLayout = QGraphicsLinearLayout(Qt.Horizontal)
         self.pinsLayout.setContentsMargins(0, 0, 0, 0)
         self.pinsLayout.setSpacing(NodeDefaults().LAYOUTS_SPACING)
         self.pinsLayout.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
 
-        self.inputsLayout = QGraphicsLinearLayout(QtCore.Qt.Vertical)
+        self.inputsLayout = QGraphicsLinearLayout(Qt.Vertical)
         self.inputsLayout.setContentsMargins(0, 0, 0, 0)
         self.inputsLayout.setSpacing(NodeDefaults().LAYOUTS_SPACING)
         self.inputsLayout.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
 
-        self.outputsLayout = QGraphicsLinearLayout(QtCore.Qt.Vertical)
+        self.outputsLayout = QGraphicsLinearLayout(Qt.Vertical)
         self.outputsLayout.setContentsMargins(0, 0, 0, 0)
         self.outputsLayout.setSpacing(NodeDefaults().LAYOUTS_SPACING)
         self.outputsLayout.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
 
         self.pinsLayout.addItem(self.inputsLayout)
         self.pinsLayout.addItem(self.outputsLayout)
-        self.pinsLayout.setAlignment(self.inputsLayout, QtCore.Qt.AlignLeft)
-        self.pinsLayout.setAlignment(self.outputsLayout, QtCore.Qt.AlignRight)
+        self.pinsLayout.setAlignment(self.inputsLayout, Qt.AlignLeft)
+        self.pinsLayout.setAlignment(self.outputsLayout, Qt.AlignRight)
         self.pinsLayout.setPreferredWidth(self.nodeLayout.preferredWidth())
 
         self.nodeLayout.addItem(self.headerLayout)
@@ -482,7 +474,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
 
     def onToggleExposeProperties(self):
         self.setExposePropertiesToCompound(not self.bExposeInputsToCompound)
-        EditorHistory().saveState(
+        editor_history.saveState(
             "{} exposing widgets".format(
                 "Start" if self.bExposeInputsToCompound else "Stop"
             ),
@@ -721,7 +713,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
             name = self.nodeNameWidget.getPlainText()
             if self.isNameValidationEnabled():
                 name = name.replace(" ", "")
-            newName = self.canvasRef().graphManager.getUniqNodeName(name)
+            newName = graph_manager.getUniqNodeName(name)
             self.setName(newName)
             self.setHeaderHtml(newName)
             self.canvasRef().requestFillProperties.emit(self.createPropertiesWidget)
@@ -980,7 +972,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
             print(self._rawNode.getName())
         assert self._rawNode.graph() is not None, "NODE GRAPH IS NONE"
         if self.canvasRef is not None:
-            if self.canvasRef().graphManager.activeGraph() != self._rawNode.graph():
+            if graph_manager.activeGraph() != self._rawNode.graph():
                 self.hide()
 
         if not self.drawlabel:
@@ -1048,7 +1040,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
                     actionButtonClass = NodeActionButtonBase
                 butt = actionButtonClass(svgFilePath, action, self)
                 self.exposedActionButtonsLayout.insertItem(0, butt)
-                self.exposedActionButtonsLayout.setAlignment(butt, QtCore.Qt.AlignRight)
+                self.exposedActionButtonsLayout.setAlignment(butt, Qt.AlignRight)
                 action.setVisible(False)
 
     def addWidget(self, widget):
@@ -1128,7 +1120,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
         if self.owningCommentNode is not None and self.owningCommentNode.collapsed:
             return
 
-        collidingItems = self.collidingItems(QtCore.Qt.ContainsItemShape)
+        collidingItems = self.collidingItems(Qt.ContainsItemShape)
         collidingNodes = set()
         for item in collidingItems:
             if item.sceneBoundingRect().contains(
@@ -1154,7 +1146,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
         if self.owningCommentNode is not None:
             if (
                 owningCommentNode._rawNode.graph()
-                == self.canvasRef().graphManager.activeGraph()
+                == graph_manager.activeGraph()
             ):
                 self.owningCommentNode.owningNodes.add(self)
 
@@ -1171,7 +1163,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
                                 continue
                         if (
                             node._rawNode.graph()
-                            != self.canvasRef().graphManager.activeGraph()
+                            != graph_manager.activeGraph()
                         ):
                             continue
                         collidingNodes.add(node)
@@ -1182,7 +1174,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
                             continue
                     if (
                         node._rawNode.graph()
-                        != self.canvasRef().graphManager.activeGraph()
+                        != graph_manager.activeGraph()
                     ):
                         continue
                     collidingNodes.add(node)
@@ -1208,17 +1200,17 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
     def paint(self, painter, option, widget):
         NodePainter.default(self, painter, option, widget)
         if self.drawLayoutsDebug:
-            painter.setPen(QtGui.QPen(QtCore.Qt.green, 0.75))
+            painter.setPen(QtGui.QPen(Qt.green, 0.75))
             painter.drawRect(self.headerLayout.geometry())
-            painter.setPen(QtGui.QPen(QtCore.Qt.black, 0.75))
+            painter.setPen(QtGui.QPen(Qt.black, 0.75))
             painter.drawRect(self.nodeNameWidget.geometry())
             painter.drawRect(self.exposedActionButtonsLayout.geometry())
-            painter.setPen(QtGui.QPen(QtCore.Qt.red, 0.75))
+            painter.setPen(QtGui.QPen(Qt.red, 0.75))
             painter.drawRect(self.pinsLayout.geometry())
-            painter.setPen(QtGui.QPen(QtCore.Qt.green, 0.75))
+            painter.setPen(QtGui.QPen(Qt.green, 0.75))
             painter.drawRect(self.inputsLayout.geometry())
             painter.drawRect(self.outputsLayout.geometry())
-            painter.setPen(QtGui.QPen(QtCore.Qt.blue, 0.75))
+            painter.setPen(QtGui.QPen(Qt.blue, 0.75))
             painter.drawRect(self.customLayout.geometry())
 
     def shouldResize(self, cursorPos):
@@ -1606,10 +1598,10 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
                 insertionIndex = (
                     findItemIndex(self.inputsLayout, grpItem) + grpItem.numPins() + 1
                 )
-                self.inputsLayout.setAlignment(grpItem, QtCore.Qt.AlignLeft)
+                self.inputsLayout.setAlignment(grpItem, Qt.AlignLeft)
                 grpItem.addPin(p)
             self.inputsLayout.insertItem(insertionIndex, p)
-            self.inputsLayout.setAlignment(p, QtCore.Qt.AlignLeft)
+            self.inputsLayout.setAlignment(p, Qt.AlignLeft)
             self.inputsLayout.invalidate()
 
         elif rawPin.direction == PinDirection.Output:
@@ -1619,10 +1611,10 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
                 insertionIndex = (
                     findItemIndex(self.outputsLayout, grpItem) + grpItem.numPins() + 1
                 )
-                self.outputsLayout.setAlignment(grpItem, QtCore.Qt.AlignRight)
+                self.outputsLayout.setAlignment(grpItem, Qt.AlignRight)
                 grpItem.addPin(p)
             self.outputsLayout.insertItem(insertionIndex, p)
-            self.outputsLayout.setAlignment(p, QtCore.Qt.AlignRight)
+            self.outputsLayout.setAlignment(p, Qt.AlignRight)
             self.outputsLayout.invalidate()
 
         p.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)

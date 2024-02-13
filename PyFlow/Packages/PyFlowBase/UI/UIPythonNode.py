@@ -1,28 +1,14 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 from types import MethodType
 import subprocess
 import os
 import uuid
 import logging
 
-from qtpy.QtWidgets import QAction
-from qtpy.QtWidgets import QFileDialog
-from qtpy.QtWidgets import QInputDialog
-from qtpy import QtCore
+from PySide6.QtWidgets import (
+    QFileDialog,
+    QInputDialog,
+)
+from PySide6 import QtCore
 
 from PyFlow import GET_PACKAGES
 from PyFlow import GET_PACKAGE_PATH
@@ -113,7 +99,7 @@ class UIPythonNode(UINodeBase):
             with open(openPath, "r") as f:
                 dataString = f.read()
                 self.tryApplyNodeData(dataString)
-            EditorHistory().saveState("Import python node data", modify=True)
+            editor_history.saveState("Import python node data", modify=True)
 
     def mouseDoubleClickEvent(self, event):
         super(UIPythonNode, self).mouseDoubleClickEvent(event)

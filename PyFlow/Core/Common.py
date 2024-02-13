@@ -1,18 +1,4 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
+from __future__ import annotations
 """
 .. sidebar:: **Common.py**
 
@@ -20,6 +6,7 @@
 
 """
 
+from pprint import pprint
 import re
 import math
 import time
@@ -31,6 +18,13 @@ from enum import IntEnum, Flag, auto
 
 from PyFlow import findPinClassByType
 from PyFlow.Core.version import Version
+from PySide6.QtCore import (
+    Signal,
+    SignalInstance,
+)
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from PyFlow.Core.PinBase import PinBase
 
 
 maxint = 2 ** (struct.Struct("i").size * 8 - 1) - 1
@@ -276,7 +270,7 @@ def getConnectedPins(pin):
     return result
 
 
-def pinAffects(lhs, rhs):
+def pinAffects(lhs:PinBase, rhs:PinBase):
     """This function for establish dependencies between pins
 
     .. warning:: Used internally, users will hardly need this
@@ -291,7 +285,7 @@ def pinAffects(lhs, rhs):
     rhs.affected_by.add(lhs)
 
 
-def canConnectPins(src, dst):
+def canConnectPins(src:PinBase, dst:PinBase):
     """**Very important fundamental function, it checks if connection between two pins is possible**
 
     :param src: Source pin to connect
@@ -696,17 +690,19 @@ def getUniqNameFromList(existingNames, name):
     return nameNoDigits + str(idx)
 
 
-def clearSignal(signal):
+def clearSignal(signal: SignalInstance) -> None:
     """Disconnects all receivers
 
     :param signal: emitter
-    :type signal: :class:`~blinker.base.Signal`
+    :type signal: :class:`~PySide6.QtCore.base.Signal`
     """
-    for receiver in list(signal.receivers.values()):
-        if isinstance(receiver, weakref.ref):
-            signal.disconnect(receiver())
-        else:
-            signal.disconnect(receiver)
+    pprint(signal)
+    # signal.disconnect()
+    # for receiver in list(signal.receivers.values()):
+    #     if isinstance(receiver, weakref.ref):
+    #         signal.disconnect(receiver())
+    #     else:
+    #         signal.disconnect(receiver)
 
 
 class SingletonDecorator:

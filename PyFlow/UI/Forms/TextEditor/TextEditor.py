@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import QApplication, QMessageBox, QFileDialog
-from qtpy.QtCore import *
-from qtpy.QtGui import *
+from PySide6.QtCore import *
+from PySide6.QtGui import *
 
-from qtpy.QtWidgets import QTextEdit
+from PySide6.QtWidgets import QTextEdit
 #import mdi_rc
 
 import uuid

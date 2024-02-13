@@ -1,22 +1,7 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
-
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-
-##     http://www.apache.org/licenses/LICENSE-2.0
-
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-
-
 import os
 
-from qtpy import QtCore
-from qtpy.QtWidgets import *
+from PySide6 import QtCore
+from PySide6.QtWidgets import *
 
 from PyFlow.UI.EditorHistory import EditorHistory
 from PyFlow.UI.Widgets.PropertiesFramework import CollapsibleFormWidget
@@ -50,7 +35,7 @@ class GeneralPreferences(CategoryWidgetBase):
         self.historyDepth.setRange(10, 100)
 
         def setHistoryCapacity():
-            EditorHistory().capacity = self.historyDepth.value()
+            editor_history.capacity = self.historyDepth.value()
 
         self.historyDepth.editingFinished.connect(setHistoryCapacity)
         commonCategory.addWidget("History depth", self.historyDepth)
@@ -73,7 +58,7 @@ class GeneralPreferences(CategoryWidgetBase):
         settings.setValue("ExtraPackageDirs", self.additionalPackagePaths.text())
         settings.setValue("HistoryDepth", self.historyDepth.value())
         settings.setValue(
-            "RedirectOutput", self.redirectOutput.checkState() == QtCore.Qt.Checked
+            "RedirectOutput", self.redirectOutput.checkState() == Qt.Checked
         )
 
     def onShow(self, settings):

@@ -8,7 +8,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -99,7 +99,7 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menuBar)
         self.toolBar = QtWidgets.QToolBar(MainWindow)
         self.toolBar.setObjectName("toolBar")
-        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
+        MainWindow.addToolBar(Qt.TopToolBarArea, self.toolBar)
         self.toolBar.addSeparator()
 
         self.retranslateUi(MainWindow)

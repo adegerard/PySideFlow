@@ -1,6 +1,6 @@
 from PyFlow.Core.Common import *
-from qtpy import QtCore
-from qtpy.QtWidgets import QCheckBox
+from PySide6 import QtCore
+from PySide6.QtWidgets import QCheckBox
 from PyFlow.UI.Widgets.InputWidgets import *
 
 
@@ -18,9 +18,9 @@ class DemoInputWidget(InputWidgetSingle):
 
     def setWidgetValue(self, val):
         if bool(val):
-            self.cb.setCheckState(QtCore.Qt.Checked)
+            self.cb.setCheckState(Qt.Checked)
         else:
-            self.cb.setCheckState(QtCore.Qt.Unchecked)
+            self.cb.setCheckState(Qt.Unchecked)
 
 
 def getInputWidget(dataType, dataSetter, defaultValue, widgetVariant=DEFAULT_WIDGET_VARIANT, **kwds):

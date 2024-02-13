@@ -1,7 +1,7 @@
 from PyFlow.UI.Tool.Tool import ShelfTool
 from PyFlow.Core.Common import Direction
 
-from qtpy import QtGui
+from PySide6 import QtGui
 
 
 class DemoShelfTool(ShelfTool):
